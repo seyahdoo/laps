@@ -1,16 +1,32 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace LapsRuntime {
     public class LapsComponent : MonoBehaviour {
+        protected const int LOGIC_DEPTH_LIMIT = 10;
+        private static int _logicFireDepth = 0;
         public List<Connection> connections = new List<Connection>();
         protected object FireOutput(int slotId, object parameter, int depth = 0) {
+            _logicFireDepth++;
+            if (_logicFireDepth >= LOGIC_DEPTH_LIMIT) {
+                Debug.LogError("Logic depth limit reached! Something must be wrong!");
+                return null;
+            }
+            
+
+            _logicFireDepth--;
             return null;
         }
         protected OutputEnumerator FireOutputAdvanced() {
+            _logicFireDepth++;
+            if (_logicFireDepth >= LOGIC_DEPTH_LIMIT) {
+                Debug.LogError("Logic depth limit reached! Something must be wrong!");
+                return default;
+            }
             
+
+            _logicFireDepth--;
             return default;
         }
         protected virtual object HandleInput(int slotId) {
@@ -26,7 +42,6 @@ namespace LapsRuntime {
                 Color.white, 
                 0.0f,
                 0.0f);
-            // Handle
             // Gizmos.DrawIcon(transform.position, "debugobject-icon", true, Color.clear);
         }
     }
