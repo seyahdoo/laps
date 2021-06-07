@@ -1,4 +1,4 @@
-# laps-framework
+# laps project
 old laps framework project got deleted due to licensing issues. sorry for the inconvinience
 
 # what happens now
