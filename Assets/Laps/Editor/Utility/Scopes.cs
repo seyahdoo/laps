@@ -146,19 +146,19 @@ namespace LapsEditor.Utility {
         }
 
         //On Change Dirty
-        public static OnChangeDirtyEnd OnChangeDirty(Object o) {
+        public static OnChangeDirtyEnd OnChangeDirty(Object unityObject) {
             EditorGUI.BeginChangeCheck();
-            return new OnChangeDirtyEnd(o);
+            return new OnChangeDirtyEnd(unityObject);
         }
         public struct OnChangeDirtyEnd : IDisposable {
-            private readonly Object _o;
-            public OnChangeDirtyEnd(Object o) {
-                _o = o;
+            private readonly Object _unityObject;
+            public OnChangeDirtyEnd(Object unityObject) {
+                _unityObject = unityObject;
             }
             public void Dispose() {
                 if (EditorGUI.EndChangeCheck()) {
-                    if (_o != null) {
-                        EditorUtility.SetDirty(_o);
+                    if (_unityObject != null) {
+                        EditorUtility.SetDirty(_unityObject);
                     }
                 }
             }
