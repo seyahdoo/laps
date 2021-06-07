@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace LapsRuntime {
-    public class ConsoleLogComponent : LapsComponent {
-
+    public class DebugComponent : LapsComponent {
         public void HandleInput(object data) {
             
         }
-        
-        
     }
 }
