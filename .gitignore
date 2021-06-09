@@ -69,7 +69,7 @@ Assets/csc.rsp.meta
 /[Aa]ssets/AddressableAssetsData/*
 /[Aa]ssets/AddressableAssetsData.*
 
-.idea/
+.idea/*
 
 Assets/codeandweb.com/Editor/SettingsTexturePackerImporter.txt
 Assets/codeandweb.com/Editor/SettingsTexturePackerImporter.txt.meta
@@ -79,4 +79,6 @@ Recordings/*
 
 *.unitypackage.meta
 *.dll.mdb.meta
+
+UserSettings/*
 
