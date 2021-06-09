@@ -67,10 +67,35 @@ namespace LapsEditor {
                 0.0f);
         }
         private Rect GetScreenSelectionRect(LapsComponent lapsComponent) {
-            return default;
+            var rect = new Rect(GetSelectionRectPosition(lapsComponent) - SelectionIconSize / 2f, SelectionIconSize);
+            return rect;
+        }
+        private Vector2 GetSelectionRectPosition(LapsComponent lapsComponent) {
+            var screenPosition = GetScreenPosition(lapsComponent);
+            if (lapsComponent.ErrorExists) {
+                if (screenPosition.x < SelectionIconSize.x / 2f) {
+                    screenPosition.x = SelectionIconSize.x / 2f;
+                }
+                if (screenPosition.x > Screen.width - SelectionIconSize.x / 2f) {
+                    screenPosition.x = Screen.width - SelectionIconSize.x / 2f;
+                }
+                if (screenPosition.y < SelectionIconSize.y / 2f) {
+                    screenPosition.y = SelectionIconSize.y / 2f;
+                }
+                if (screenPosition.y > Screen.height - 40 - SelectionIconSize.y / 2f) {
+                    screenPosition.y = Screen.height - 40 - SelectionIconSize.y / 2f;
+                }
+            }
+            return screenPosition;
+        }
+        private Vector2 GetScreenPosition(LapsComponent lapsComponent) {
+            return WorldToScreenPosition(lapsComponent.transform.position);
+        }
+        private Vector2 WorldToScreenPosition(Vector3 worldPoint) {
+            return HandleUtility.WorldToGUIPoint(worldPoint);
         }
         private Texture GetIconTexture(LapsComponent lapsComponent) {
-            return default;
+            return Resources.Load<Texture>("lapsobject-icon");
         }
     }
 }

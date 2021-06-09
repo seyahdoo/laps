@@ -7,6 +7,7 @@ namespace LapsRuntime {
         protected const int LOGIC_DEPTH_LIMIT = 10;
         private static int _logicFireDepth = 0;
         public List<Connection> connections = new List<Connection>();
+        public bool ErrorExists => false;
         protected object FireOutput(int slotId, object parameter, int depth = 0) {
             _logicFireDepth++;
             if (_logicFireDepth >= LOGIC_DEPTH_LIMIT) {

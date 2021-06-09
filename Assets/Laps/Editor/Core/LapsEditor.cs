@@ -4,7 +4,8 @@ namespace LapsEditor {
     public static class LapsEditor {
         public static LapsEditorSelectionModule lapsEditorSelectionModule;
         public static LapsEditorLogicModule lapsEditorLogicModule;
-        static LapsEditor () {
+        [InitializeOnLoadMethod]
+        private static void Initialize() {
             lapsEditorSelectionModule = new LapsEditorSelectionModule();
             lapsEditorLogicModule = new LapsEditorLogicModule();
             SceneView.duringSceneGui += SceneGUI;
