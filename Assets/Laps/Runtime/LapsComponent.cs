@@ -33,16 +33,12 @@ namespace LapsRuntime {
             return null;
         }
         private void OnDrawGizmos() {
-            GUI.DrawTexture(
-                new Rect(transform.position, Vector2.one * 28f), 
-                Resources.Load<Texture>("debugobject-icon"), 
-                ScaleMode.StretchToFill, 
-                true, 
-                0.0f, 
-                Color.white, 
-                0.0f,
-                0.0f);
-            // Gizmos.DrawIcon(transform.position, "debugobject-icon", true, Color.clear);
+            //this is here because we want to be able to select laps components with unity selection rect,
+            //unity selection rect wont select an object if it has no gizmos
+            var oldColor = Gizmos.color;
+            Gizmos.color = Color.clear;
+            Gizmos.DrawSphere(transform.position, float.Epsilon);
+            Gizmos.color = oldColor;
         }
     }
     public struct OutputEnumerator {
