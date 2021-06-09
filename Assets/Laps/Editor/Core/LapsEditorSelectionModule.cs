@@ -38,9 +38,17 @@ namespace LapsEditor {
             });
         }
         public bool SelectionPress(Vector2 position, bool additive) {
-            return false;
+            if (additive) {
+                Debug.Log("press returned true");
+                return true;
+            }
+            else {
+                Debug.Log("press returned false");
+                return false;
+            }
         }
         public void SelectionRelease(Vector2 position) {
+            Debug.Log("release");
         }
         private void EditorApplicationOnHierarchyChanged() {
             //todo optimize this

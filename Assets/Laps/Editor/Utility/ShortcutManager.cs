@@ -23,7 +23,7 @@ namespace LapsEditor.Utility {
         }
         private void HandleEventPress() {
             if (_activeShortcut != null) return;
-            if (e.type != EventType.KeyDown && e.type != EventType.MouseDown) return;
+            if (e.type != EventType.KeyDown) return;
             for (int i = 0; i < shortcuts.Count; i++) { var shortcut = shortcuts[i];
                 if (!EventSatisfiesActivationRulePress(e, shortcut.activation)) continue;
                 if (shortcut.onPress == null || shortcut.onPress()) {
@@ -36,7 +36,6 @@ namespace LapsEditor.Utility {
         private bool EventSatisfiesActivationRulePress(Event @event, ActivationRule rule) {
             if (GUIUtility.hotControl != 0) return false;
             if (rule.modifiers != (@event.modifiers & ~EventModifiers.CapsLock & ~EventModifiers.FunctionKey)) return false;
-            if (rule.mouseButton >= 0 && @event.isMouse && @event.button == rule.mouseButton) return true;  
             if (rule.key != KeyCode.None && @event.isKey && @event.keyCode == rule.key) return true;
             return false;
         }
@@ -62,11 +61,6 @@ namespace LapsEditor.Utility {
         private bool EventSatisfiesActivationRuleRelease(Event @event, ActivationRule rule) {
             // Mouse leaving the window triggers release because else after mouse has left the current window;
             // up condition does not exist therefore is never true; release does not get called
-            if (rule.mouseButton >= 0 
-                && (@event.type == EventType.MouseUp || @event.type == EventType.MouseLeaveWindow) 
-                && rule.mouseButton == @event.button) {
-                return true;
-            }
             if (rule.key != KeyCode.None 
                 && @event.type == EventType.KeyUp 
                 && rule.key == @event.keyCode) {
@@ -87,7 +81,6 @@ namespace LapsEditor.Utility {
         }
         public class ActivationRule {
             public EventModifiers modifiers = EventModifiers.None;
-            public int mouseButton = -1;
             public KeyCode key = KeyCode.None;
         }
     }
