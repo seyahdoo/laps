@@ -3,7 +3,9 @@
     "rootNamespace": "LapsEditModeTests",
     "references": [
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "LapsRuntime",
+        "LapsEditor"
     ],
     "includePlatforms": [
         "Editor"

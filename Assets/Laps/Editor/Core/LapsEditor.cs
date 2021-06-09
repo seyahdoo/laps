@@ -2,16 +2,16 @@ using UnityEditor;
 
 namespace LapsEditor {
     public static class LapsEditor {
-        private static LapsEditorSelectionModule _lapsEditorSelectionModule;
-        private static LapsEditorLogicModule _lapsEditorLogicModule;
+        public static LapsEditorSelectionModule lapsEditorSelectionModule;
+        public static LapsEditorLogicModule lapsEditorLogicModule;
         static LapsEditor () {
-            _lapsEditorSelectionModule = new LapsEditorSelectionModule();
-            _lapsEditorLogicModule = new LapsEditorLogicModule();
+            lapsEditorSelectionModule = new LapsEditorSelectionModule();
+            lapsEditorLogicModule = new LapsEditorLogicModule();
             SceneView.duringSceneGui += SceneGUI;
         }
         private static void SceneGUI(SceneView obj) {
-            _lapsEditorSelectionModule.OnSceneGUI();
-            _lapsEditorLogicModule.OnSceneGUI();
+            lapsEditorSelectionModule.OnSceneGUI();
+            lapsEditorLogicModule.OnSceneGUI();
         }
     }
 }
