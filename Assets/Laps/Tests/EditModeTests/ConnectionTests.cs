@@ -49,7 +49,16 @@ namespace LapsEditModeTests {
         [Test]
         public void FireOutputAdvancedCallsHandleInputOnConnectedObjectsAsMoveNextCalled() { Assert.Fail("Test not implemented yet"); }
         [Test]
-        public void TryingToConnectSameConnectionTwiceDoesNotCreateTwoConnections() { Assert.Fail("Test not implemented yet"); }
+        public void TryingToConnectSameConnectionTwiceDoesNotCreateTwoConnections() {
+            var comp1 = new GameObject().AddComponent<TestComponent>();
+            var comp2 = new GameObject().AddComponent<TestComponent>();
+            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
+            Assert.AreEqual(1, comp1.connections.Count);
+            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
+            Assert.AreEqual(1, comp1.connections.Count);
+            comp1.FireEventBasic();
+            Assert.AreEqual(1, comp2.inputCallCount);
+        }
         [Test]
         public void TryingToDisconnectAnInvalidConnectionDoesNotGenerateErrors() { Assert.Fail("Test not implemented yet"); }
         [Test]

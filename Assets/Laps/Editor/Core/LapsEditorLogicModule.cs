@@ -14,10 +14,10 @@ namespace LapsEditor {
 
         public void Connect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             if (!CanConnect(sourceComponent, sourceSlotId, targetComponent, targetSlotId)) return;
+            if (ConnectionExists(sourceComponent, sourceSlotId, targetComponent, targetSlotId)) return;
             sourceComponent.connections.Add(new Connection(sourceSlotId, targetComponent, targetSlotId));
         }
         public void Disconnect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
-            if (!ConnectionExists(sourceComponent, sourceSlotId, targetComponent, targetSlotId)) return;
             for (int i = 0; i < sourceComponent.connections.Count; i++) {
                 var connection = sourceComponent.connections[i];
                 if (connection.sourceSlotId == sourceSlotId && connection.targetSlotId == targetSlotId && connection.targetComponent == targetComponent) {
@@ -30,7 +30,12 @@ namespace LapsEditor {
             return true;
         }
         public bool ConnectionExists(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
-            return true;
+            foreach (var connection in sourceComponent.connections) {
+                if (connection.sourceSlotId == sourceSlotId && connection.targetSlotId == targetSlotId && connection.targetComponent == targetComponent) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
