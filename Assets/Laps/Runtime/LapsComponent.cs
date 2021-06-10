@@ -4,14 +4,15 @@ using UnityEngine;
 
 namespace LapsRuntime {
     public class LapsComponent : MonoBehaviour {
-        protected const int LOGIC_DEPTH_LIMIT = 10;
+        public const string LOGIC_DEPTH_LIMIT_ERROR_STRING = "Logic depth limit reached! Something must be wrong!";
+        private const int LOGIC_DEPTH_LIMIT = 10;
         private static int _logicFireDepth = 0;
         [HideInInspector, SerializeField] public List<Connection> connections = new List<Connection>();
         public bool ErrorExists => false;
         protected object FireOutput(int slotId, object parameter = null) {
             _logicFireDepth++;
             if (_logicFireDepth >= LOGIC_DEPTH_LIMIT) {
-                Debug.LogError("Logic depth limit reached! Something must be wrong!");
+                Debug.LogError(LOGIC_DEPTH_LIMIT_ERROR_STRING);
                 return null;
             }
             foreach (var connection in connections) {

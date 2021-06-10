@@ -26,7 +26,12 @@ namespace LapsEditModeTests {
         }
         [Test]
         public void RecursiveLoopExitsAtSomePointAndLogsErrorWithFireOutputBasic() {
-            
+            var comp1 = new GameObject().AddComponent<TestComponent>();
+            var comp2 = new GameObject().AddComponent<TestComponent>();
+            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 1, comp2, 1);
+            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp2, 1, comp1, 1);
+            comp1.FireSlotOne();
+            LogAssert.Expect(LogType.Error, LapsComponent.LOGIC_DEPTH_LIMIT_ERROR_STRING);
         }
         [Test]
         public void RecursiveLoopExitsAtSomePointAndLogsErrorWithFireOutputAdvanced() { Assert.Fail("Test not implemented yet"); }
@@ -36,6 +41,8 @@ namespace LapsEditModeTests {
         public void FireOutputAdvancedCallsHandleInputOnConnectedObjectsAsMoveNextCalled() { Assert.Fail("Test not implemented yet"); }
         [Test]
         public void TryingToConnectSameConnectionTwiceDoesNotCreateTwoConnections() { Assert.Fail("Test not implemented yet"); }
+        [Test]
+        public void TryingToDisconnectAnInvalidConnectionDoesNotGenerateErrors() { Assert.Fail("Test not implemented yet"); }
         [Test]
         public void CanDisconnectLastConnectionOfParticularSlot() { Assert.Fail("Test not implemented yet"); }
     }
