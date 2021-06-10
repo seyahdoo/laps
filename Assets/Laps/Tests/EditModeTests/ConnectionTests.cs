@@ -36,7 +36,16 @@ namespace LapsEditModeTests {
         [Test]
         public void RecursiveLoopExitsAtSomePointAndLogsErrorWithFireOutputAdvanced() { Assert.Fail("Test not implemented yet"); }
         [Test]
-        public void FireOutputBasicCallsHandleInputOnConnectedObjects() { Assert.Fail("Test not implemented yet"); }
+        public void FireOutputBasicCallsHandleInputOnTwoConnectedObjects() {
+            var comp1 = new GameObject().AddComponent<TestComponent>();
+            var comp2 = new GameObject().AddComponent<TestComponent>();
+            var comp3 = new GameObject().AddComponent<TestComponent>();
+            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
+            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 0, comp3, 0);
+            comp1.FireEventBasic();
+            Assert.AreEqual(1, comp2.inputCallCount);
+            Assert.AreEqual(1, comp3.inputCallCount);
+        }
         [Test]
         public void FireOutputAdvancedCallsHandleInputOnConnectedObjectsAsMoveNextCalled() { Assert.Fail("Test not implemented yet"); }
         [Test]
