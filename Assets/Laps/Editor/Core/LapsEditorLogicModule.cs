@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using LapsRuntime;
 using UnityEngine;
 
 namespace LapsEditor {
     public class LapsEditorLogicModule {
         private LapsEditor _editor;
+        private static List<Slot> _slots = new List<Slot>();
         public LapsEditorLogicModule(LapsEditor lapsEditor) {
             _editor = lapsEditor;
         }
@@ -52,7 +54,14 @@ namespace LapsEditor {
             return false;
         }
         private void DrawAllSlots() {
-            
+            foreach (var lapsComponent in _editor.allComponents) {
+                _slots.Clear();
+                lapsComponent.GetInputSlots(_slots);
+                foreach (var slot in _slots) {
+                    
+                    
+                }
+            }
             
         }
         private void DrawAllConnections() {

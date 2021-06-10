@@ -37,8 +37,8 @@ namespace LapsRuntime {
         protected virtual object HandleInput(int slotId, object parameter) {
             return null;
         }
-        protected virtual void GetInputSlots(List<Slot> slots) { }
-        protected virtual void GetOutputSlots(List<Slot> slots) { }
+        public virtual void GetInputSlots(List<Slot> slots) { }
+        public virtual void GetOutputSlots(List<Slot> slots) { }
         private void OnDrawGizmos() {
             //this is here because we want to be able to select laps components with unity selection rect,
             //unity selection rect wont select an object if it has no gizmos
