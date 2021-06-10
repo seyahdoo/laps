@@ -30,6 +30,7 @@ namespace LapsEditor {
                 _dragging = TryGetHoveredSlot(Event.current.mousePosition, out _draggingSlot);
             }, () => {
                 if (!_dragging) return;
+                _dragging = false;
                 if (!TryGetHoveredSlot(Event.current.mousePosition, out var releasedSlot)) return;
                 if (Equals(_draggingSlot, releasedSlot)) {
                     RemoveConnectionOfSlot(_draggingSlot);
@@ -162,6 +163,14 @@ namespace LapsEditor {
                 }
             }
         }
+        private void DrawConnection(SlotInformation slot1, SlotInformation slot2) {
+            var color = CanConnect(slot1, slot2) 
+                ? ConnectableConnectionColor
+                : NonConnectableConnectionColor;
+            var targetSlot = slot1.isTarget ? slot1 : slot2;
+            var sourceSlot = slot1.isTarget ? slot2 : slot1;
+            DrawConnection(GetScreenPositionOfSlot(sourceSlot),GetScreenPositionOfSlot(targetSlot), color);
+        }
         private void DrawConnection(Vector2 sourcePosition, Vector2 destinationPosition, Color color) {
             var sourceDrawPosition = sourcePosition + Vector2.right * (SlotRadius * .9f);
             var destinationDrawPosition = destinationPosition - Vector2.right * (SlotRadius * .9f);
@@ -187,6 +196,23 @@ namespace LapsEditor {
             return _slotInformationCacheDictionary.TryGetValue(key, out slotInformation);
         }
         private void DrawDraggingAndHoverConnection() {
+            if (!_dragging) return;
+            if (TryGetHoveredSlot(Event.current.mousePosition, out var hoveredSlot)) {
+                if (!Equals(_draggingSlot, hoveredSlot)) {
+                    DrawConnection(_draggingSlot, hoveredSlot);
+                }
+                else {
+                    //todo draw would be deleted connection in red 
+                }
+            }
+            else {
+                if (_draggingSlot.isTarget) {
+                    DrawConnection(Event.current.mousePosition, GetScreenPositionOfSlot(_draggingSlot), DanglingConnectionColor);
+                }
+                else {
+                    DrawConnection(GetScreenPositionOfSlot(_draggingSlot), Event.current.mousePosition, DanglingConnectionColor);
+                }
+            }
         }
         private bool TryGetHoveredSlot(Vector2 point, out SlotInformation slotInformation) {
             foreach (var pair in _slotInformationCacheDictionary) {
