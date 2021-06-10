@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using LapsRuntime;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -7,11 +8,26 @@ using UnityEngine.TestTools;
 namespace LapsEditModeTests {
     public class ConnectionTests {
         [Test]
-        public void ConnectBasic() { Assert.Fail("Test not implemented yet"); }
+        public void ConnectBasic() {
+            var comp1 = new GameObject().AddComponent<TestComponent>();
+            var comp2 = new GameObject().AddComponent<TestComponent>();
+            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
+            comp1.FireEventBasic();
+            Assert.AreEqual(1, comp2.inputCallCount);
+        }
         [Test]
-        public void DisconnectBasic() { Assert.Fail("Test not implemented yet"); }
+        public void DisconnectBasic() {
+            var comp1 = new GameObject().AddComponent<TestComponent>();
+            var comp2 = new GameObject().AddComponent<TestComponent>();
+            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
+            LapsEditor.LapsEditor.lapsEditorLogicModule.Disconnect(comp1, 0, comp2, 0);
+            comp1.FireEventBasic();
+            Assert.AreEqual(0, comp2.inputCallCount);
+        }
         [Test]
-        public void RecursiveLoopExitsAtSomePointAndLogsErrorWithFireOutputBasic() { Assert.Fail("Test not implemented yet"); }
+        public void RecursiveLoopExitsAtSomePointAndLogsErrorWithFireOutputBasic() {
+            
+        }
         [Test]
         public void RecursiveLoopExitsAtSomePointAndLogsErrorWithFireOutputAdvanced() { Assert.Fail("Test not implemented yet"); }
         [Test]

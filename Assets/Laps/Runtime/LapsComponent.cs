@@ -6,7 +6,7 @@ namespace LapsRuntime {
     public class LapsComponent : MonoBehaviour {
         protected const int LOGIC_DEPTH_LIMIT = 10;
         private static int _logicFireDepth = 0;
-        [HideInInspector, SerializeField] private List<Connection> connections = new List<Connection>();
+        [HideInInspector, SerializeField] public List<Connection> connections = new List<Connection>();
         public bool ErrorExists => false;
         protected object FireOutput(int slotId, object parameter = null) {
             _logicFireDepth++;
@@ -54,9 +54,14 @@ namespace LapsRuntime {
     // }
     [Serializable]
     public struct Connection {
-        public LapsComponent targetComponent;
         public int sourceSlotId;
+        public LapsComponent targetComponent;
         public int targetSlotId;
+        public Connection(int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
+            this.sourceSlotId = sourceSlotId;
+            this.targetComponent = targetComponent;
+            this.targetSlotId = targetSlotId;
+        }
     }
     public struct Slot {
         public Slot(string name, int id, Type parameterType = null, Type returnType = null) {
