@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace LapsEditor {
     public class LapsEditorSelectionModule {
-        private static readonly Vector2 SelectionIconSize = new Vector2(30f, 30f);
+        internal static readonly Vector2 SelectionIconSize = new Vector2(30f, 30f);
         private static readonly Color SelectionIconSelectableColor = new Color(1f, 1f, 1f, 0.5f);
         private static readonly Color SelectionIconSelectedColor = new Color(1f, 1f, 1f, 0.9f);
         private static readonly Color SelectionIconHighlightedColor = new Color(1f, 1f, 1f, 0.7f);

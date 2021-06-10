@@ -75,5 +75,25 @@ namespace LapsRuntime {
         public int id;
         public Type parameterType;
         public Type returnType;
+        public Color GetSlotParameterColor() {
+            return TypeToColor(parameterType);
+        }
+        public Color GetSlotReturnColor() {
+            return TypeToColor(returnType);
+        }
+        private Color TypeToColor(Type type) {
+            if (type == null) return Color.white;
+            if (type == typeof(Transform)) return Color.green;
+            if (type == typeof(Rigidbody2D)) return Color.green;
+            if (type == typeof(Rigidbody)) return Color.green;
+            if (type == typeof(Collider2D)) return Color.green;
+            if (type == typeof(Collider)) return Color.green;
+            if (type == typeof(float)) return Color.magenta;
+            if (type == typeof(string)) return Color.magenta;
+            if (type == typeof(Vector3)) return Color.magenta;
+            if (type == typeof(bool)) return Color.magenta;
+            if (type == typeof(Color)) return Color.magenta;
+            return Color.red;
+        }
     }
 }
