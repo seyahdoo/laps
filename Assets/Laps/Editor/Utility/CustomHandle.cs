@@ -15,7 +15,7 @@ namespace LapsEditor {
             MouseDownFunction mouseDownFunction,
             MouseUpFunction mouseUpFunction,
             MouseDragFunction mouseDragFunction = null) {
-            
+
             int id = GUIUtility.GetControlID(DragHandleHintHash, FocusType.Passive);
             switch (Event.current.GetTypeForControl(id)) {
                case EventType.MouseDown:
