@@ -8,11 +8,13 @@ namespace LapsEditor {
         public delegate float DistanceFunction();
         public delegate void MouseDownFunction();
         public delegate void MouseUpFunction();
+        public delegate void MouseDragFunction();
         public static void Draw(
             DrawFunction drawFunction,
             DistanceFunction distanceFunction,
             MouseDownFunction mouseDownFunction,
-            MouseUpFunction mouseUpFunction) {
+            MouseUpFunction mouseUpFunction,
+            MouseDragFunction mouseDragFunction = null) {
             
             int id = GUIUtility.GetControlID(DragHandleHintHash, FocusType.Passive);
             switch (Event.current.GetTypeForControl(id)) {
@@ -35,6 +37,7 @@ namespace LapsEditor {
                case EventType.MouseDrag:
                    if (id == GUIUtility.hotControl) {
                        Event.current.Use();
+                       mouseDragFunction?.Invoke();
                    }
                    break;
                case EventType.Repaint:
