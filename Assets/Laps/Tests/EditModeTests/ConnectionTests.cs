@@ -78,5 +78,8 @@ namespace LapsEditModeTests {
         [Test]
         [Ignore("not implemented yet")]
         public void CanDisconnectLastConnectionOfParticularSlot() { Assert.Fail("Test not implemented yet"); }
+        [Test]
+        [Ignore("not implemented yet")]
+        public void CanConnectIsSane() { Assert.Fail("Test not implemented yet"); }
     }
 }
