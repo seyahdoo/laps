@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LapsRuntime {
+    [LapsAddMenuOptions("Logic/Value/LayerMask")]
     public class LayerMaskValue : BaseValue<LayerMask> {
     }
 }

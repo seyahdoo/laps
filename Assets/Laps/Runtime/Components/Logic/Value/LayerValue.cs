@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace LapsRuntime {
+    [LapsAddMenuOptions("Logic/Value/Layer")]
     public class LayerValue : LapsComponent {
         [Layer] public int value;
         public bool triggerOnAwake = false;

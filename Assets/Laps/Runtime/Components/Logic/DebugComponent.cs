@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace LapsRuntime {
+    [LapsAddMenuOptions("Logic/Debug Component")]
     public class DebugComponent : LapsComponent {
         public string label;
         public void FireDebugEvent() {
