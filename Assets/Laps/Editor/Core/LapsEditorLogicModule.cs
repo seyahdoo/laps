@@ -15,15 +15,18 @@ namespace LapsEditor {
         
         private LapsEditor _editor;
         private static List<Slot> _slots = new List<Slot>();
+        private Dictionary<SlotInformationCacheKey, SlotInformation> _slotInformationCacheDictionary = new Dictionary<SlotInformationCacheKey, SlotInformation>();
         public LapsEditorLogicModule(LapsEditor lapsEditor) {
             _editor = lapsEditor;
         }
         public void OnSceneGUI() {
             CustomHandle.Draw(((isHotControl, isClosestHandle) => {
-                DrawAllSlots();
-                DrawAllConnections();
-                DrawDraggingAndHoverConnection();
-                DrawLabels();
+                using (Scopes.HandlesGUI()) {
+                    DrawAllSlots();
+                    DrawAllConnections();
+                    DrawDraggingAndHoverConnection();
+                    DrawLabels();
+                }
             }),(() => {
                 return GetNearestDistanceFromPointToAnySlot(Event.current.mousePosition);
             }), () => {
@@ -64,17 +67,20 @@ namespace LapsEditor {
             return false;
         }
         private void DrawAllSlots() {
+            _slotInformationCacheDictionary.Clear();
             foreach (var lapsComponent in _editor.allComponents) {
                 _slots.Clear();
                 lapsComponent.GetInputSlots(_slots);
                 for (int i = 0; i < _slots.Count; i++) {
                     var slotInformation = new SlotInformation(lapsComponent, true, _slots[i], i);
+                    _slotInformationCacheDictionary.Add(new SlotInformationCacheKey(lapsComponent, true, _slots[i].id), slotInformation);
                     DrawSlot(slotInformation);
                 }
                 _slots.Clear();
                 lapsComponent.GetOutputSlots(_slots);
                 for (int i = 0; i < _slots.Count; i++) {
                     var slotInformation = new SlotInformation(lapsComponent, false, _slots[i], i);
+                    _slotInformationCacheDictionary.Add(new SlotInformationCacheKey(lapsComponent, false, _slots[i].id), slotInformation);
                     DrawSlot(slotInformation);
                 }
             }
@@ -86,12 +92,10 @@ namespace LapsEditor {
             position.y = Mathf.Floor(position.y);
             var parameterColor = slotInformation.slot.GetSlotParameterColor();
             var returnColor = slotInformation.slot.GetSlotReturnColor();
-            using (Scopes.HandlesGUI()) {
-                using (Scopes.HandlesColor(Color.white)) {
-                    Handles.DrawSolidRectangleWithOutline(new Rect(position - Vector2.one * SlotRadius, Vector2.one* SlotRadius * 2), Color.black, Color.clear);
-                    Handles.DrawSolidRectangleWithOutline(new Rect(position - Vector2.one * SlotRadius*.8f, new Vector2(SlotRadius * .8f, SlotRadius * 2 * .8f)), parameterColor, Color.clear);
-                    Handles.DrawSolidRectangleWithOutline(new Rect(new Vector2(position.x, position.y - SlotRadius * .8f), new Vector2(SlotRadius * .8f, SlotRadius * 2 * .8f)), returnColor, Color.clear);
-                }
+            using (Scopes.HandlesColor(Color.white)) {
+                Handles.DrawSolidRectangleWithOutline(new Rect(position - Vector2.one * SlotRadius, Vector2.one* SlotRadius * 2), Color.black, Color.clear);
+                Handles.DrawSolidRectangleWithOutline(new Rect(position - Vector2.one * SlotRadius*.8f, new Vector2(SlotRadius * .8f, SlotRadius * 2 * .8f)), parameterColor, Color.clear);
+                Handles.DrawSolidRectangleWithOutline(new Rect(new Vector2(position.x, position.y - SlotRadius * .8f), new Vector2(SlotRadius * .8f, SlotRadius * 2 * .8f)), returnColor, Color.clear);
             }
         }
         private Vector2 GetScreenPositionOfSlot(SlotInformation slotInformation) {
@@ -109,6 +113,39 @@ namespace LapsEditor {
             return true;
         }
         private void DrawAllConnections() {
+            foreach (var lapsComponent in _editor.allComponents) {
+                foreach (var connection in lapsComponent.connections) {
+                    var sourceDrawInformation = GetDrawInformation(lapsComponent, false, connection.sourceSlotId);
+                    var destinationDrawInformation = GetDrawInformation(connection.targetComponent, true, connection.targetSlotId);
+                    DrawConnection(
+                        GetScreenPositionOfSlot(sourceDrawInformation), 
+                        GetScreenPositionOfSlot(destinationDrawInformation), 
+                        ConnectableConnectionColor);
+                }
+            }
+        }
+        private void DrawConnection(Vector2 sourcePosition, Vector2 destinationPosition, Color color) {
+            var sourceDrawPosition = sourcePosition + Vector2.right * (SlotRadius * .9f);
+            var destinationDrawPosition = destinationPosition - Vector2.right * (SlotRadius * .9f);
+            Handles.DrawBezier(
+                sourceDrawPosition, 
+                destinationDrawPosition, 
+                sourceDrawPosition + Vector2.right * 80f, 
+                destinationDrawPosition + Vector2.left * 80f,
+                Color.black, 
+                null, 
+                10f);
+            Handles.DrawBezier(
+                sourceDrawPosition, 
+                destinationDrawPosition, 
+                sourceDrawPosition + Vector2.right * 80f, 
+                destinationDrawPosition + Vector2.left * 80f,
+                color, 
+                null, 
+                4f);
+        }
+        private SlotInformation GetDrawInformation(LapsComponent lapsComponent, bool isInput, int connectionSourceSlotId) {
+            return _slotInformationCacheDictionary[new SlotInformationCacheKey(lapsComponent, isInput, connectionSourceSlotId)];
         }
         private void DrawDraggingAndHoverConnection() {
         }
@@ -127,6 +164,16 @@ namespace LapsEditor {
                 this.isInput = isInput;
                 this.slot = slot;
                 this.index = index;
+            }
+        }
+        private struct SlotInformationCacheKey {
+            public LapsComponent lapsComponent;
+            public bool isInput;
+            public int slotId;
+            public SlotInformationCacheKey(LapsComponent lapsComponent, bool isInput, int slotId) {
+                this.lapsComponent = lapsComponent;
+                this.isInput = isInput;
+                this.slotId = slotId;
             }
         }
     }
