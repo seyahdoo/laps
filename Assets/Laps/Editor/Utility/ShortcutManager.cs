@@ -12,7 +12,6 @@ namespace LapsEditor.Utility {
             shortcuts.Add(t);
         }
         public void HandleInput() {
-            HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
             if (e.type == EventType.Repaint) {
                 HandleEventUpdate();
                 return;
