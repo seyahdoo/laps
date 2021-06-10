@@ -45,15 +45,15 @@ namespace LapsEditor {
                 case EventType.Repaint:
                     Color currentColour = Handles.color;
                     if (id == GUIUtility.hotControl && s_DragHandleHasMoved)
-                        Handles.color = colorSelected;
-                    Handles.matrix = Matrix4x4.identity;
-                    capFunc(id, screenPosition, Quaternion.identity, handleSize);
-                    Handles.matrix = cachedMatrix;
+                    //     Handles.color = colorSelected;
+                    // Handles.matrix = Matrix4x4.identity;
+                    // capFunc(id, screenPosition, Quaternion.identity, handleSize);
+                    // Handles.matrix = cachedMatrix;
                     Handles.color = currentColour;
                     break;
                 case EventType.Layout:
                     Handles.matrix = Matrix4x4.identity;
-                    HandleUtility.AddControl(id, HandleUtility.DistanceToCircle(screenPosition, handleSize));
+                    // HandleUtility.AddControl(id, HandleUtility.DistanceToCircle(screenPosition, handleSize));
                     Handles.matrix = cachedMatrix;
                     break;
             }
