@@ -34,6 +34,7 @@ namespace LapsEditModeTests {
             LogAssert.Expect(LogType.Error, LapsComponent.LOGIC_DEPTH_LIMIT_ERROR_STRING);
         }
         [Test]
+        [Ignore("not implemented yet")]
         public void RecursiveLoopExitsAtSomePointAndLogsErrorWithFireOutputAdvanced() { Assert.Fail("Test not implemented yet"); }
         [Test]
         public void FireOutputBasicCallsHandleInputOnTwoConnectedObjects() {
@@ -47,6 +48,7 @@ namespace LapsEditModeTests {
             Assert.AreEqual(1, comp3.inputCallCount);
         }
         [Test]
+        [Ignore("not implemented yet")]
         public void FireOutputAdvancedCallsHandleInputOnConnectedObjectsAsMoveNextCalled() { Assert.Fail("Test not implemented yet"); }
         [Test]
         public void TryingToConnectSameConnectionTwiceDoesNotCreateTwoConnections() {
@@ -60,8 +62,13 @@ namespace LapsEditModeTests {
             Assert.AreEqual(1, comp2.inputCallCount);
         }
         [Test]
-        public void TryingToDisconnectAnInvalidConnectionDoesNotGenerateErrors() { Assert.Fail("Test not implemented yet"); }
+        public void TryingToDisconnectAnInvalidConnectionDoesNotGenerateErrors() {
+            var comp1 = new GameObject().AddComponent<TestComponent>();
+            var comp2 = new GameObject().AddComponent<TestComponent>();
+            LapsEditor.LapsEditor.lapsEditorLogicModule.Disconnect(comp1, 0, comp2, 0);
+        }
         [Test]
+        [Ignore("not implemented yet")]
         public void CanDisconnectLastConnectionOfParticularSlot() { Assert.Fail("Test not implemented yet"); }
     }
 }
