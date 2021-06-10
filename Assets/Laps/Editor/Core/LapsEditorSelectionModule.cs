@@ -49,7 +49,7 @@ namespace LapsEditor {
                 var distance = actualDistance <= .01f ? 0f: float.MaxValue;
                 return distance;
             },(() => {
-                return true;
+                
             }),() => {
                 Selection.activeGameObject = lapsComponent.gameObject;
             });

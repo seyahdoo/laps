@@ -1,13 +1,26 @@
 using LapsRuntime;
+using UnityEngine;
 
 namespace LapsEditor {
     public class LapsEditorLogicModule {
         public void OnSceneGUI() {
+            CustomHandle.Draw(((isHotControl, isClosestHandle) => {
+                DrawAllSlots();
+                DrawAllConnections();
+                DrawDraggingAndHoverConnection();
+            }),(() => {
+                return GetNearestDistanceFromPointToAnySlot(Event.current.mousePosition);
+            }), () => {
+                //remember pressed slot
+            }, () => {
+                //handle connecting
+            });
             
             //draw logic slots
             //draw logic connections
             //handle logic connection add remove
         }
+
 
         public void Connect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             if (!CanConnect(sourceComponent, sourceSlotId, targetComponent, targetSlotId)) return;
@@ -33,6 +46,16 @@ namespace LapsEditor {
                 }
             }
             return false;
+        }
+        private void DrawAllSlots() {
+            
+        }
+        private void DrawAllConnections() {
+        }
+        private void DrawDraggingAndHoverConnection() {
+        }
+        private float GetNearestDistanceFromPointToAnySlot(Vector2 point) {
+            return float.MaxValue;
         }
     }
 }

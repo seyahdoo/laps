@@ -6,7 +6,7 @@ namespace LapsEditor {
         private static readonly int DragHandleHintHash = nameof(CustomHandle).GetHashCode();
         public delegate void DrawFunction(bool isHotControl, bool isClosestHandle);
         public delegate float DistanceFunction();
-        public delegate bool MouseDownFunction();
+        public delegate void MouseDownFunction();
         public delegate void MouseUpFunction();
         public static void Draw(
             DrawFunction drawFunction,
@@ -18,11 +18,10 @@ namespace LapsEditor {
             switch (Event.current.GetTypeForControl(id)) {
                case EventType.MouseDown:
                    if (HandleUtility.nearestControl == id) {
-                       if (mouseDownFunction.Invoke()) {
-                           GUIUtility.hotControl = id;
-                           Event.current.Use();
-                           EditorGUIUtility.SetWantsMouseJumping(1);
-                       }
+                       GUIUtility.hotControl = id;
+                       Event.current.Use();
+                       EditorGUIUtility.SetWantsMouseJumping(1);
+                       mouseDownFunction?.Invoke();
                    }
                    break;
                case EventType.MouseUp:
