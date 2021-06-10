@@ -112,7 +112,7 @@ namespace LapsEditor {
         }
         private Texture GetIconTexture(LapsComponent lapsComponent) {
             //todo cache this
-            return Resources.Load<Texture>("lapsobject-icon");
+            return Resources.Load<Texture>($"LapsIcons/{lapsComponent.GetType().Name.ToLower()}");
         }
     }
 }
