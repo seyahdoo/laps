@@ -12,20 +12,20 @@ namespace LapsEditModeTests {
         public void FireSlotOne() {
             FireOutput(1);
         }
-        protected override object HandleInput(int slotId, object parameter) {
+        protected override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
             switch (slotId) {
                 case 0: inputCallCount++; return null;
                 case 1: FireSlotOne(); return null;
             }
             return null;
         }
-        public override void GetInputSlots(List<Slot> slots) {
-            slots.Add(new Slot("log normal", 0));
-            slots.Add(new Slot("fire slot 1", 1));
+        public override void GetInputSlots(List<LogicSlot> slots) {
+            slots.Add(new LogicSlot("log normal", 0));
+            slots.Add(new LogicSlot("fire slot 1", 1));
         }
-        public override void GetOutputSlots(List<Slot> slots) {
-            slots.Add(new Slot("debug", 0));
-            slots.Add(new Slot("slot 1", 1));
+        public override void GetOutputSlots(List<LogicSlot> slots) {
+            slots.Add(new LogicSlot("debug", 0));
+            slots.Add(new LogicSlot("slot 1", 1));
         }
     }
 }

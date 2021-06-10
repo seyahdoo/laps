@@ -14,7 +14,7 @@ namespace LapsEditor {
         private static readonly Color DanglingConnectionColor = new Color(1, 1, 1, 1);
         
         private LapsEditor _editor;
-        private static List<Slot> _slots = new List<Slot>();
+        private static List<LogicSlot> _slots = new List<LogicSlot>();
         private Dictionary<SlotInformationCacheKey, SlotInformation> _slotInformationCacheDictionary = new Dictionary<SlotInformationCacheKey, SlotInformation>();
         private SlotInformation _draggingSlot;
         private bool _dragging = false;
@@ -59,9 +59,9 @@ namespace LapsEditor {
                     var targetSlotInformation = _draggingSlot.isTarget ? _draggingSlot : releasedSlot;
                     Connect(
                         sourceSlotInformation.lapsComponent,
-                        sourceSlotInformation.slot.id,
+                        sourceSlotInformation.LogicSlot.id,
                         targetSlotInformation.lapsComponent,
-                        targetSlotInformation.slot.id);
+                        targetSlotInformation.LogicSlot.id);
                 }
             });
         }
@@ -83,7 +83,7 @@ namespace LapsEditor {
             if (!slotInformation.isTarget) {
                 var connections = slotInformation.lapsComponent.connections;
                 for (var i = 0; i < connections.Count; i++) {
-                    if (connections[i].sourceSlotId == slotInformation.slot.id) {
+                    if (connections[i].sourceSlotId == slotInformation.LogicSlot.id) {
                         connections.RemoveAt(i);
                         return;
                     }
@@ -93,7 +93,7 @@ namespace LapsEditor {
                 foreach (var lapsComponent in _editor.allComponents) {
                     for (int i = 0; i < lapsComponent.connections.Count; i++) {
                         var connection = lapsComponent.connections[i];
-                        if (connection.targetComponent == slotInformation.lapsComponent && connection.targetSlotId == slotInformation.slot.id){
+                        if (connection.targetComponent == slotInformation.lapsComponent && connection.targetSlotId == slotInformation.LogicSlot.id){
                             lapsComponent.connections.RemoveAt(i);
                             return;
                         }
@@ -105,7 +105,7 @@ namespace LapsEditor {
             if (slot1.isTarget == slot2.isTarget) return false;
             var targetSlot = slot1.isTarget ? slot1 : slot2;
             var sourceSlot = slot1.isTarget ? slot2 : slot1;
-            return CanConnect(sourceSlot.lapsComponent, sourceSlot.slot.id, targetSlot.lapsComponent,targetSlot.slot.id);
+            return CanConnect(sourceSlot.lapsComponent, sourceSlot.LogicSlot.id, targetSlot.lapsComponent,targetSlot.LogicSlot.id);
         }
         private bool CanConnect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             return true;
@@ -150,8 +150,8 @@ namespace LapsEditor {
             if (!IsSlotPositionInsideSceneView(position)) return;
             position.x = Mathf.Floor(position.x);
             position.y = Mathf.Floor(position.y);
-            var parameterColor = slotInformation.slot.GetSlotParameterColor();
-            var returnColor = slotInformation.slot.GetSlotReturnColor();
+            var parameterColor = slotInformation.LogicSlot.GetSlotParameterColor();
+            var returnColor = slotInformation.LogicSlot.GetSlotReturnColor();
             using (Scopes.HandlesColor(Color.white)) {
                 Handles.DrawSolidRectangleWithOutline(new Rect(position - Vector2.one * SlotRadius, Vector2.one* SlotRadius * 2), Color.black, Color.clear);
                 Handles.DrawSolidRectangleWithOutline(new Rect(position - Vector2.one * SlotRadius*.8f, new Vector2(SlotRadius * .8f, SlotRadius * 2 * .8f)), parameterColor, Color.clear);
@@ -279,12 +279,12 @@ namespace LapsEditor {
         private struct SlotInformation {
             public LapsComponent lapsComponent;
             public bool isTarget;
-            public Slot slot;
+            public LogicSlot LogicSlot;
             public int index;
-            public SlotInformation(LapsComponent lapsComponent, bool isTarget, Slot slot, int index) {
+            public SlotInformation(LapsComponent lapsComponent, bool isTarget, LogicSlot logicSlot, int index) {
                 this.lapsComponent = lapsComponent;
                 this.isTarget = isTarget;
-                this.slot = slot;
+                this.LogicSlot = logicSlot;
                 this.index = index;
             }
         }

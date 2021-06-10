@@ -7,19 +7,19 @@ namespace LapsRuntime {
         public void FireDebugEvent() {
             FireOutput(0);
         }
-        protected override object HandleInput(int slotId, object parameter) {
+        protected override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
             switch (slotId) {
                 case 0: Debug.Log($"{label}:{parameter}"); return null;
                 case 1: Debug.LogError($"{label}:{parameter}"); return null;
             }
             return null;
         }
-        public override void GetInputSlots(List<Slot> slots) {
-            slots.Add(new Slot("log normal", 0));
-            slots.Add(new Slot("log error", 1));
+        public override void GetInputSlots(List<LogicSlot> slots) {
+            slots.Add(new LogicSlot("log normal", 0));
+            slots.Add(new LogicSlot("log error", 1));
         }
-        public override void GetOutputSlots(List<Slot> slots) {
-            slots.Add(new Slot("debug", 0));
+        public override void GetOutputSlots(List<LogicSlot> slots) {
+            slots.Add(new LogicSlot("debug", 0));
         }
     }
 }

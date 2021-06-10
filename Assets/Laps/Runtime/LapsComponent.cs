@@ -17,7 +17,7 @@ namespace LapsRuntime {
             }
             foreach (var connection in connections) {
                 if (connection.sourceSlotId == slotId) {
-                    connection.targetComponent.HandleInput(connection.targetSlotId, parameter);
+                    connection.targetComponent.HandleInput(connection.targetSlotId, parameter, this);
                 }
             }
             _logicFireDepth--;
@@ -34,11 +34,11 @@ namespace LapsRuntime {
         //     _logicFireDepth--;
         //     return default;
         // }
-        protected virtual object HandleInput(int slotId, object parameter) {
+        protected virtual object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
             return null;
         }
-        public virtual void GetInputSlots(List<Slot> slots) { }
-        public virtual void GetOutputSlots(List<Slot> slots) { }
+        public virtual void GetInputSlots(List<LogicSlot> slots) { }
+        public virtual void GetOutputSlots(List<LogicSlot> slots) { }
         private void OnDrawGizmos() {
             //this is here because we want to be able to select laps components with unity selection rect,
             //unity selection rect wont select an object if it has no gizmos
@@ -64,8 +64,8 @@ namespace LapsRuntime {
             this.targetSlotId = targetSlotId;
         }
     }
-    public struct Slot {
-        public Slot(string name, int id, Type parameterType = null, Type returnType = null) {
+    public struct LogicSlot {
+        public LogicSlot(string name, int id, Type parameterType = null, Type returnType = null) {
             this.name = name;
             this.id = id;
             this.parameterType = parameterType;
