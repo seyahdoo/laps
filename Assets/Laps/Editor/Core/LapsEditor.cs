@@ -22,7 +22,7 @@ namespace LapsEditor {
             SceneView.duringSceneGui += SceneGUI;
             EditorApplication.hierarchyChanged += EditorApplicationOnHierarchyChanged;
         }
-        private void EditorApplicationOnHierarchyChanged() {
+        public void EditorApplicationOnHierarchyChanged() {
             //todo optimize this
             allComponents.Clear();
             var allComps = Object.FindObjectsOfType<LapsComponent>();

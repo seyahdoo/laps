@@ -21,12 +21,7 @@ namespace LapsEditor {
         }
         public void OnSceneGUI() {
             CustomHandle.Draw(((isHotControl, isClosestHandle) => {
-                using (Scopes.HandlesGUI()) {
-                    DrawAllSlots();
-                    DrawAllConnections();
-                    DrawDraggingAndHoverConnection();
-                    DrawLabels();
-                }
+                Draw();
             }),(() => {
                 return GetNearestDistanceFromPointToAnySlot(Event.current.mousePosition);
             }), () => {
@@ -65,6 +60,14 @@ namespace LapsEditor {
                 }
             }
             return false;
+        }
+        public void Draw() {
+            using (Scopes.HandlesGUI()) {
+                DrawAllSlots();
+                DrawAllConnections();
+                DrawDraggingAndHoverConnection();
+                DrawLabels();
+            }
         }
         private void DrawAllSlots() {
             _slotInformationCacheDictionary.Clear();
@@ -115,12 +118,9 @@ namespace LapsEditor {
         private void DrawAllConnections() {
             foreach (var lapsComponent in _editor.allComponents) {
                 foreach (var connection in lapsComponent.connections) {
-                    var sourceDrawInformation = GetDrawInformation(lapsComponent, false, connection.sourceSlotId);
-                    var destinationDrawInformation = GetDrawInformation(connection.targetComponent, true, connection.targetSlotId);
-                    DrawConnection(
-                        GetScreenPositionOfSlot(sourceDrawInformation), 
-                        GetScreenPositionOfSlot(destinationDrawInformation), 
-                        ConnectableConnectionColor);
+                    if (!TryGetDrawInformation(lapsComponent, false, connection.sourceSlotId, out var sourceDrawInformation)) continue;
+                    if (!TryGetDrawInformation(connection.targetComponent, true, connection.targetSlotId, out var destinationDrawInformation)) continue;
+                    DrawConnection(GetScreenPositionOfSlot(sourceDrawInformation), GetScreenPositionOfSlot(destinationDrawInformation), ConnectableConnectionColor);
                 }
             }
         }
@@ -144,8 +144,9 @@ namespace LapsEditor {
                 null, 
                 4f);
         }
-        private SlotInformation GetDrawInformation(LapsComponent lapsComponent, bool isInput, int connectionSourceSlotId) {
-            return _slotInformationCacheDictionary[new SlotInformationCacheKey(lapsComponent, isInput, connectionSourceSlotId)];
+        private bool TryGetDrawInformation(LapsComponent lapsComponent, bool isInput, int connectionSourceSlotId, out SlotInformation slotInformation) {
+            var key = new SlotInformationCacheKey(lapsComponent, isInput, connectionSourceSlotId);
+            return _slotInformationCacheDictionary.TryGetValue(key, out slotInformation);
         }
         private void DrawDraggingAndHoverConnection() {
         }

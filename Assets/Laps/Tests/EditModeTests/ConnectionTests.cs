@@ -66,6 +66,16 @@ namespace LapsEditModeTests {
             LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Disconnect(comp1, 0, comp2, 0);
         }
         [Test]
+        public void DrawingInvalidConnectionWorksDoesNotThrowException() {
+            var comp1 = new GameObject().AddComponent<TestComponent>();
+            var comp2 = new GameObject().AddComponent<TestComponent>();
+            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(comp1, 0, comp2, 100);
+            LapsEditor.LapsEditor.instance.allComponents.Clear();
+            LapsEditor.LapsEditor.instance.allComponents.Add(comp1);
+            LapsEditor.LapsEditor.instance.allComponents.Add(comp2);
+            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Draw();
+        }
+        [Test]
         [Ignore("not implemented yet")]
         public void CanDisconnectLastConnectionOfParticularSlot() { Assert.Fail("Test not implemented yet"); }
     }
