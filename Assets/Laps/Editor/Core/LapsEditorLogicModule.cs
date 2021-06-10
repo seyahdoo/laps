@@ -16,6 +16,8 @@ namespace LapsEditor {
         private LapsEditor _editor;
         private static List<Slot> _slots = new List<Slot>();
         private Dictionary<SlotInformationCacheKey, SlotInformation> _slotInformationCacheDictionary = new Dictionary<SlotInformationCacheKey, SlotInformation>();
+        private SlotInformation _draggingSlot;
+        private bool _dragging = false;
         public LapsEditorLogicModule(LapsEditor lapsEditor) {
             _editor = lapsEditor;
         }
@@ -25,17 +27,25 @@ namespace LapsEditor {
             }),(() => {
                 return GetNearestDistanceFromPointToAnySlot(Event.current.mousePosition);
             }), () => {
-                //remember pressed slot
+                _dragging = TryGetHoveredSlot(Event.current.mousePosition, out _draggingSlot);
             }, () => {
-                //handle connecting
+                if (!_dragging) return;
+                if (!TryGetHoveredSlot(Event.current.mousePosition, out var releasedSlot)) return;
+                if (Equals(_draggingSlot, releasedSlot)) {
+                    RemoveConnectionOfSlot(_draggingSlot);
+                }
+                else {
+                    if (!CanConnect(_draggingSlot, releasedSlot)) return;
+                    var sourceSlotInformation = _draggingSlot.isTarget ? releasedSlot : _draggingSlot;
+                    var targetSlotInformation = _draggingSlot.isTarget ? _draggingSlot : releasedSlot;
+                    Connect(
+                        sourceSlotInformation.lapsComponent,
+                        sourceSlotInformation.slot.id,
+                        targetSlotInformation.lapsComponent,
+                        targetSlotInformation.slot.id);
+                }
             });
-            
-            //draw logic slots
-            //draw logic connections
-            //handle logic connection add remove
         }
-
-
         public void Connect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             if (!CanConnect(sourceComponent, sourceSlotId, targetComponent, targetSlotId)) return;
             if (ConnectionExists(sourceComponent, sourceSlotId, targetComponent, targetSlotId)) return;
@@ -50,10 +60,38 @@ namespace LapsEditor {
                 }
             }
         }
-        public bool CanConnect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
+        private void RemoveConnectionOfSlot(SlotInformation slotInformation) {
+            if (!slotInformation.isTarget) {
+                var connections = slotInformation.lapsComponent.connections;
+                for (var i = 0; i < connections.Count; i++) {
+                    if (connections[i].sourceSlotId == slotInformation.slot.id) {
+                        connections.RemoveAt(i);
+                        return;
+                    }
+                }
+            }
+            else {
+                foreach (var lapsComponent in _editor.allComponents) {
+                    for (int i = 0; i < lapsComponent.connections.Count; i++) {
+                        var connection = lapsComponent.connections[i];
+                        if (connection.targetComponent == slotInformation.lapsComponent && connection.targetSlotId == slotInformation.slot.id){
+                            lapsComponent.connections.RemoveAt(i);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        private bool CanConnect(SlotInformation slot1, SlotInformation slot2) {
+            if (slot1.isTarget == slot2.isTarget) return false;
+            var targetSlot = slot1.isTarget ? slot1 : slot2;
+            var sourceSlot = slot1.isTarget ? slot2 : slot1;
+            return CanConnect(sourceSlot.lapsComponent, sourceSlot.slot.id, targetSlot.lapsComponent,targetSlot.slot.id);
+        }
+        private bool CanConnect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             return true;
         }
-        public bool ConnectionExists(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
+        private bool ConnectionExists(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             foreach (var connection in sourceComponent.connections) {
                 if (connection.sourceSlotId == sourceSlotId && connection.targetSlotId == targetSlotId && connection.targetComponent == targetComponent) {
                     return true;
@@ -104,7 +142,7 @@ namespace LapsEditor {
         private Vector2 GetScreenPositionOfSlot(SlotInformation slotInformation) {
             var worldPoint = slotInformation.lapsComponent.transform.position;
             var screenPosition =  HandleUtility.WorldToGUIPoint(worldPoint);
-            screenPosition -= new Vector2((slotInformation.isInput ? 1: -1) * ((LapsEditorSelectionModule.SelectionIconSize.x / 2) + SlotRadius), LapsEditorSelectionModule.SelectionIconSize.y / 2 - SlotMargin);
+            screenPosition -= new Vector2((slotInformation.isTarget ? 1: -1) * ((LapsEditorSelectionModule.SelectionIconSize.x / 2) + SlotRadius), LapsEditorSelectionModule.SelectionIconSize.y / 2 - SlotMargin);
             screenPosition -= (slotInformation.index * SlotSpace * Vector2.down);
             return screenPosition;
         }
@@ -181,12 +219,12 @@ namespace LapsEditor {
         }
         private struct SlotInformation {
             public LapsComponent lapsComponent;
-            public bool isInput;
+            public bool isTarget;
             public Slot slot;
             public int index;
-            public SlotInformation(LapsComponent lapsComponent, bool isInput, Slot slot, int index) {
+            public SlotInformation(LapsComponent lapsComponent, bool isTarget, Slot slot, int index) {
                 this.lapsComponent = lapsComponent;
-                this.isInput = isInput;
+                this.isTarget = isTarget;
                 this.slot = slot;
                 this.index = index;
             }
