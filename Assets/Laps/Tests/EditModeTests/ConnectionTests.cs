@@ -70,9 +70,7 @@ namespace LapsEditModeTests {
             var comp1 = new GameObject().AddComponent<TestComponent>();
             var comp2 = new GameObject().AddComponent<TestComponent>();
             LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(comp1, 0, comp2, 100);
-            LapsEditor.LapsEditor.instance.allComponents.Clear();
-            LapsEditor.LapsEditor.instance.allComponents.Add(comp1);
-            LapsEditor.LapsEditor.instance.allComponents.Add(comp2);
+            LapsEditor.LapsEditor.instance.allComponents = new[] {comp1, comp2};
             LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Draw();
         }
         [Test]

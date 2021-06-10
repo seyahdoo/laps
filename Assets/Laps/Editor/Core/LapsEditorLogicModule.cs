@@ -18,10 +18,28 @@ namespace LapsEditor {
         private Dictionary<SlotInformationCacheKey, SlotInformation> _slotInformationCacheDictionary = new Dictionary<SlotInformationCacheKey, SlotInformation>();
         private SlotInformation _draggingSlot;
         private bool _dragging = false;
+        private ShortcutManager _shortcutManager;
+        private bool _logicEditModeEnabled = false;
         public LapsEditorLogicModule(LapsEditor lapsEditor) {
             _editor = lapsEditor;
+            SetupShortcuts();
+        }
+        private void SetupShortcuts() {
+            _shortcutManager = new ShortcutManager();
+            _shortcutManager.AddShortcut(new ShortcutManager.Shortcut("toggle logic edit mode") {
+                activation = new ShortcutManager.ActivationRule() {
+                    key = KeyCode.S,
+                },
+                onPress = ToggleLogicEditMode
+            });
+        }
+        private bool ToggleLogicEditMode() {
+            _logicEditModeEnabled = !_logicEditModeEnabled;
+            return true;
         }
         public void OnSceneGUI() {
+            _shortcutManager.HandleInput();
+            if (!_logicEditModeEnabled) return;
             CustomHandle.Draw(((isHotControl, isClosestHandle) => {
                 Draw();
             }),(() => {
@@ -228,11 +246,26 @@ namespace LapsEditor {
         }
         private float GetNearestDistanceFromPointToAnySlot(Vector2 point) {
             var nearestDistance = float.MaxValue;
-            foreach (var pair in _slotInformationCacheDictionary) {
-                var rect = GetSlotRect(pair.Value);
-                var distance = LapsMath.DistanceFromPointToRect(rect, point);
-                if (distance < nearestDistance) {
-                    nearestDistance = distance;
+            foreach (var lapsComponent in _editor.allComponents) {
+                _slots.Clear();
+                lapsComponent.GetInputSlots(_slots);
+                for (int i = 0; i < _slots.Count; i++) {
+                    var slotInformation = new SlotInformation(lapsComponent, true, _slots[i], i);
+                    var rect = GetSlotRect(slotInformation);
+                    var distance = LapsMath.DistanceFromPointToRect(rect, point);
+                    if (distance < nearestDistance) {
+                        nearestDistance = distance;
+                    }
+                }
+                _slots.Clear();
+                lapsComponent.GetOutputSlots(_slots);
+                for (int i = 0; i < _slots.Count; i++) {
+                    var slotInformation = new SlotInformation(lapsComponent, false, _slots[i], i);
+                    var rect = GetSlotRect(slotInformation);
+                    var distance = LapsMath.DistanceFromPointToRect(rect, point);
+                    if (distance < nearestDistance) {
+                        nearestDistance = distance;
+                    }
                 }
             }
             return nearestDistance;

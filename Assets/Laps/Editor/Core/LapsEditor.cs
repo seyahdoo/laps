@@ -7,9 +7,9 @@ namespace LapsEditor {
     public class LapsEditor {
         public LapsEditorSelectionModule lapsEditorSelectionModule;
         public LapsEditorLogicModule lapsEditorLogicModule;
-        public readonly List<LapsComponent> allComponents = new List<LapsComponent>();
-        public static LapsEditor instance;
+        public LapsComponent[] allComponents;
         
+        public static LapsEditor instance;
         [InitializeOnLoadMethod]
         private static void Initialize() {
             if (instance == null) {
@@ -20,15 +20,10 @@ namespace LapsEditor {
             lapsEditorSelectionModule = new LapsEditorSelectionModule(this);
             lapsEditorLogicModule = new LapsEditorLogicModule(this);
             SceneView.duringSceneGui += SceneGUI;
-            EditorApplication.hierarchyChanged += EditorApplicationOnHierarchyChanged;
-        }
-        public void EditorApplicationOnHierarchyChanged() {
-            //todo optimize this
-            allComponents.Clear();
-            var allComps = Object.FindObjectsOfType<LapsComponent>();
-            allComponents.AddRange(allComps);
         }
         private void SceneGUI(SceneView obj) {
+            //todo optimize this
+            allComponents = Object.FindObjectsOfType<LapsComponent>(false);
             lapsEditorSelectionModule.OnSceneGUI();
             lapsEditorLogicModule.OnSceneGUI();
         }
