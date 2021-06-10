@@ -31,6 +31,7 @@ namespace LapsEditor {
         }
         private void DrawLapsIcon(LapsComponent lapsComponent) {
             var rect = GetScreenSelectionRect(lapsComponent);
+            //thanks to higekun @ https://answers.unity.com/questions/463207/how-do-you-make-a-custom-handle-respond-to-the-mou.html
             CustomHandle.Draw((isHotControl, isClosestHandle) => {
                 var iconTexture = GetIconTexture(lapsComponent);
                 var color = GetHandleColorForLapsComponent(lapsComponent, isHotControl, isClosestHandle);
