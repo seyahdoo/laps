@@ -45,16 +45,21 @@ namespace LapsEditor {
                         0.0f);
                 }
             },() => {
-                var p = Event.current.mousePosition;
-                //source MultiRRomero at https://stackoverflow.com/questions/5254838/calculating-distance-between-a-point-and-a-rectangular-box-nearest-point
-                var dx = Mathf.Max(rect.min.x - p.x, 0, p.x - rect.max.x);
-                var dy = Mathf.Max(rect.min.y - p.y, 0, p.y - rect.max.y);
-                var actualDistance = Mathf.Sqrt(dx * dx + dy * dy);
+                var actualDistance = DistanceFromPointToRect(rect, Event.current.mousePosition);
                 var distance = actualDistance <= .01f ? 0f: float.MaxValue;
                 return distance;
-            },null,() => {
+            },(() => {
+                return true;
+            }),() => {
                 Selection.activeGameObject = lapsComponent.gameObject;
-            }, null);
+            });
+        }
+        private float DistanceFromPointToRect(Rect rect, Vector2 p) {
+            //source MultiRRomero at https://stackoverflow.com/questions/5254838/calculating-distance-between-a-point-and-a-rectangular-box-nearest-point
+            var dx = Mathf.Max(rect.min.x - p.x, 0, p.x - rect.max.x);
+            var dy = Mathf.Max(rect.min.y - p.y, 0, p.y - rect.max.y);
+            var distance = Mathf.Sqrt(dx * dx + dy * dy);
+            return distance;
         }
         private Color GetHandleColorForLapsComponent(LapsComponent lapsComponent, bool isHotControl, bool isClosestHandle) {
             if (lapsComponent.ErrorExists) return SelectionIconErrorColor;
