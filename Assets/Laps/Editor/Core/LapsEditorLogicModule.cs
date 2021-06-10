@@ -150,8 +150,32 @@ namespace LapsEditor {
         }
         private void DrawDraggingAndHoverConnection() {
         }
+        private bool TryGetHoveredSlot(Vector2 point, out SlotInformation slotInformation) {
+            foreach (var pair in _slotInformationCacheDictionary) {
+                var rect = GetSlotRect(pair.Value);
+                var distance = LapsMath.DistanceFromPointToRect(rect, point);
+                if (distance <= .01f) {
+                    slotInformation = pair.Value;
+                    return true;
+                }
+            }
+            slotInformation = default;
+            return false;
+        }
         private float GetNearestDistanceFromPointToAnySlot(Vector2 point) {
-            return float.MaxValue;
+            var nearestDistance = float.MaxValue;
+            foreach (var pair in _slotInformationCacheDictionary) {
+                var rect = GetSlotRect(pair.Value);
+                var distance = LapsMath.DistanceFromPointToRect(rect, point);
+                if (distance < nearestDistance) {
+                    nearestDistance = distance;
+                }
+            }
+            return nearestDistance;
+        }
+        private Rect GetSlotRect(SlotInformation slotInformation) {
+            var position = GetScreenPositionOfSlot(slotInformation);
+            return new Rect(position - Vector2.one * SlotRadius, Vector2.one * SlotRadius * 2);
         }
         private void DrawLabels() {
         }
