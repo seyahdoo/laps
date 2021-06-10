@@ -3,6 +3,10 @@ using UnityEngine;
 
 namespace LapsEditor {
     public class LapsEditorLogicModule {
+        private LapsEditor _editor;
+        public LapsEditorLogicModule(LapsEditor lapsEditor) {
+            _editor = lapsEditor;
+        }
         public void OnSceneGUI() {
             CustomHandle.Draw(((isHotControl, isClosestHandle) => {
                 DrawAllSlots();
@@ -48,6 +52,7 @@ namespace LapsEditor {
             return false;
         }
         private void DrawAllSlots() {
+            
             
         }
         private void DrawAllConnections() {

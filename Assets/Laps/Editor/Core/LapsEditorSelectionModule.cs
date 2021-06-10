@@ -10,21 +10,15 @@ namespace LapsEditor {
         private static readonly Color SelectionIconSelectedColor = new Color(1f, 1f, 1f, 0.9f);
         private static readonly Color SelectionIconHighlightedColor = new Color(1f, 1f, 1f, 0.7f);
         private static readonly Color SelectionIconErrorColor = new Color(1f, 0f, 0f, 1);
-
-        private LapsComponent[] _lapsComponents;
-        public LapsEditorSelectionModule() {
-            EditorApplication.hierarchyChanged += EditorApplicationOnHierarchyChanged;
-            EditorApplicationOnHierarchyChanged();
+        private LapsEditor _editor;
+        public LapsEditorSelectionModule(LapsEditor lapsEditor) {
+            _editor = lapsEditor;
         }
         public void OnSceneGUI() {
             DrawLapsIcons();
         }
-        private void EditorApplicationOnHierarchyChanged() {
-            //todo optimize this
-            _lapsComponents = Object.FindObjectsOfType<LapsComponent>();
-        }
         private void DrawLapsIcons() {
-            foreach (var lapsComponent in _lapsComponents) {
+            foreach (var lapsComponent in _editor.allComponents) {
                 DrawLapsIcon(lapsComponent);
             }
         }

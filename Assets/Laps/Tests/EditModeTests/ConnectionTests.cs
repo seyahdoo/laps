@@ -9,7 +9,7 @@ namespace LapsEditModeTests {
         public void ConnectBasic() {
             var comp1 = new GameObject().AddComponent<TestComponent>();
             var comp2 = new GameObject().AddComponent<TestComponent>();
-            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
+            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
             comp1.FireEventBasic();
             Assert.AreEqual(1, comp2.inputCallCount);
         }
@@ -17,8 +17,8 @@ namespace LapsEditModeTests {
         public void DisconnectBasic() {
             var comp1 = new GameObject().AddComponent<TestComponent>();
             var comp2 = new GameObject().AddComponent<TestComponent>();
-            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
-            LapsEditor.LapsEditor.lapsEditorLogicModule.Disconnect(comp1, 0, comp2, 0);
+            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
+            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Disconnect(comp1, 0, comp2, 0);
             comp1.FireEventBasic();
             Assert.AreEqual(0, comp2.inputCallCount);
         }
@@ -26,8 +26,8 @@ namespace LapsEditModeTests {
         public void RecursiveLoopExitsAtSomePointAndLogsErrorWithFireOutputBasic() {
             var comp1 = new GameObject().AddComponent<TestComponent>();
             var comp2 = new GameObject().AddComponent<TestComponent>();
-            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 1, comp2, 1);
-            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp2, 1, comp1, 1);
+            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(comp1, 1, comp2, 1);
+            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(comp2, 1, comp1, 1);
             comp1.FireSlotOne();
             LogAssert.Expect(LogType.Error, LapsComponent.LOGIC_DEPTH_LIMIT_ERROR_STRING);
         }
@@ -39,8 +39,8 @@ namespace LapsEditModeTests {
             var comp1 = new GameObject().AddComponent<TestComponent>();
             var comp2 = new GameObject().AddComponent<TestComponent>();
             var comp3 = new GameObject().AddComponent<TestComponent>();
-            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
-            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 0, comp3, 0);
+            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
+            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(comp1, 0, comp3, 0);
             comp1.FireEventBasic();
             Assert.AreEqual(1, comp2.inputCallCount);
             Assert.AreEqual(1, comp3.inputCallCount);
@@ -52,9 +52,9 @@ namespace LapsEditModeTests {
         public void TryingToConnectSameConnectionTwiceDoesNotCreateTwoConnections() {
             var comp1 = new GameObject().AddComponent<TestComponent>();
             var comp2 = new GameObject().AddComponent<TestComponent>();
-            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
+            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
             Assert.AreEqual(1, comp1.connections.Count);
-            LapsEditor.LapsEditor.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
+            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(comp1, 0, comp2, 0);
             Assert.AreEqual(1, comp1.connections.Count);
             comp1.FireEventBasic();
             Assert.AreEqual(1, comp2.inputCallCount);
@@ -63,7 +63,7 @@ namespace LapsEditModeTests {
         public void TryingToDisconnectAnInvalidConnectionDoesNotGenerateErrors() {
             var comp1 = new GameObject().AddComponent<TestComponent>();
             var comp2 = new GameObject().AddComponent<TestComponent>();
-            LapsEditor.LapsEditor.lapsEditorLogicModule.Disconnect(comp1, 0, comp2, 0);
+            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Disconnect(comp1, 0, comp2, 0);
         }
         [Test]
         [Ignore("not implemented yet")]
