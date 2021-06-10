@@ -19,11 +19,11 @@ namespace LapsEditModeTests {
             }
             return null;
         }
-        protected override void GetInputSlots(List<Slot> slots) {
+        public override void GetInputSlots(List<Slot> slots) {
             slots.Add(new Slot("log normal", 0));
             slots.Add(new Slot("fire slot 1", 1));
         }
-        protected override void GetOutputSlots(List<Slot> slots) {
+        public override void GetOutputSlots(List<Slot> slots) {
             slots.Add(new Slot("debug", 0));
             slots.Add(new Slot("slot 1", 1));
         }
