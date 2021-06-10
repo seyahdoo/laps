@@ -11,54 +11,20 @@ namespace LapsEditor {
         private static readonly Color SelectionIconHighlightedColor = new Color(1f, 1f, 1f, 0.7f);
         private static readonly Color SelectionIconErrorColor = new Color(1f, 0f, 0f, 1);
 
-        public LapsComponent[] lapsComponents;
-        private ShortcutManager _shortcuts;
+        private LapsComponent[] _lapsComponents;
         public LapsEditorSelectionModule() {
             EditorApplication.hierarchyChanged += EditorApplicationOnHierarchyChanged;
             EditorApplicationOnHierarchyChanged();
-            SetupShortcuts();
         }
         public void OnSceneGUI() {
             DrawLapsIcons();
-            // _shortcuts.HandleInput();
-        }
-        private void SetupShortcuts() {
-            // _shortcuts = new ShortcutManager();
-            // _shortcuts.AddShortcut(new ShortcutManager.Shortcut("select with l-click") {
-            //     activation = new ShortcutManager.ActivationRule() {
-            //         mouseButton = 0,
-            //     },
-            //     onPress = () => SelectionPress(Event.current.mousePosition, false),
-            //     onRelease = () => SelectionRelease(Event.current.mousePosition),
-            // });
-            // _shortcuts.AddShortcut(new ShortcutManager.Shortcut("additive select with shift l-click") {
-            //     activation = new ShortcutManager.ActivationRule() {
-            //         mouseButton = 0,
-            //         modifiers = EventModifiers.Shift,
-            //     },
-            //     onPress = () => SelectionPress(Event.current.mousePosition, true),
-            //     onRelease = () => SelectionRelease(Event.current.mousePosition),
-            // });
-        }
-        public bool SelectionPress(Vector2 position, bool additive) {
-            if (additive) {
-                Debug.Log("press returned true");
-                return true;
-            }
-            else {
-                Debug.Log("press returned false");
-                return false;
-            }
-        }
-        public void SelectionRelease(Vector2 position) {
-            Debug.Log("release");
         }
         private void EditorApplicationOnHierarchyChanged() {
             //todo optimize this
-            lapsComponents = Object.FindObjectsOfType<LapsComponent>();
+            _lapsComponents = Object.FindObjectsOfType<LapsComponent>();
         }
         private void DrawLapsIcons() {
-            foreach (var lapsComponent in lapsComponents) {
+            foreach (var lapsComponent in _lapsComponents) {
                 DrawLapsIcon(lapsComponent);
             }
         }
@@ -126,6 +92,7 @@ namespace LapsEditor {
             return HandleUtility.WorldToGUIPoint(worldPoint);
         }
         private Texture GetIconTexture(LapsComponent lapsComponent) {
+            //todo cache this
             return Resources.Load<Texture>("lapsobject-icon");
         }
     }
