@@ -71,7 +71,7 @@ namespace LapsEditModeTests {
             var comp2 = new GameObject().AddComponent<TestComponent>();
             LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(comp1, 0, comp2, 100);
             LapsEditor.LapsEditor.instance.allComponents = new[] {comp1, comp2};
-            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Draw();
+            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.OnRepaint();
         }
         [Test]
         [Ignore("not implemented yet")]

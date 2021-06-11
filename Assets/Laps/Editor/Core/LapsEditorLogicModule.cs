@@ -12,6 +12,8 @@ namespace LapsEditor {
         private static readonly Color ConnectableConnectionColor = new Color(0, 1, 0, 1);
         private static readonly Color NonConnectableConnectionColor = new Color(1, 0, 0, 1);
         private static readonly Color DanglingConnectionColor = new Color(1, 1, 1, 1);
+        private static readonly int HandleHintHash = nameof(LapsEditorLogicModule).GetHashCode();
+
         
         private LapsEditor _editor;
         private static List<LogicSlot> _slots = new List<LogicSlot>();
@@ -40,30 +42,62 @@ namespace LapsEditor {
         public void OnSceneGUI() {
             _shortcutManager.HandleInput();
             if (!_logicEditModeEnabled) return;
-            CustomHandle.Draw(((isHotControl, isClosestHandle) => {
-                Draw();
-            }),(() => {
-                return GetNearestDistanceFromPointToAnySlot(Event.current.mousePosition);
-            }), () => {
-                _dragging = TryGetHoveredSlot(Event.current.mousePosition, out _draggingSlot);
-            }, () => {
-                if (!_dragging) return;
-                _dragging = false;
-                if (!TryGetHoveredSlot(Event.current.mousePosition, out var releasedSlot)) return;
-                if (Equals(_draggingSlot, releasedSlot)) {
-                    RemoveConnectionOfSlot(_draggingSlot);
-                }
-                else {
-                    if (!CanConnect(_draggingSlot, releasedSlot)) return;
-                    var sourceSlotInformation = _draggingSlot.isTarget ? releasedSlot : _draggingSlot;
-                    var targetSlotInformation = _draggingSlot.isTarget ? _draggingSlot : releasedSlot;
-                    Connect(
-                        sourceSlotInformation.lapsComponent,
-                        sourceSlotInformation.LogicSlot.id,
-                        targetSlotInformation.lapsComponent,
-                        targetSlotInformation.LogicSlot.id);
-                }
-            });
+            HandleTheHandle();
+        }
+        private void HandleTheHandle() {
+            int id = GUIUtility.GetControlID(HandleHintHash, FocusType.Passive);
+            switch (Event.current.GetTypeForControl(id)) {
+                case EventType.MouseDown:
+                    if (HandleUtility.nearestControl == id) {
+                        GUIUtility.hotControl = id;
+                        Event.current.Use();
+                        EditorGUIUtility.SetWantsMouseJumping(1);
+                        OnMouseDown();
+                    }
+                    break;
+                case EventType.MouseUp:
+                    if (id == GUIUtility.hotControl) {
+                        GUIUtility.hotControl = 0;
+                        Event.current.Use();
+                        EditorGUIUtility.SetWantsMouseJumping(0);
+                        OnMouseUp();
+                    }
+                    break;
+                case EventType.MouseDrag:
+                    if (id == GUIUtility.hotControl) {
+                        Event.current.Use();
+                        // OnMouseDrag();
+                    }
+                    break;
+                case EventType.Repaint:
+                    OnRepaint();
+                    break;
+                case EventType.Layout:
+                    var distance = GetNearestDistanceFromPointToAnySlot(Event.current.mousePosition);
+                    HandleUtility.AddControl(id, distance);
+                    break;
+            }
+        }
+        private void OnMouseDown() {
+            _dragging = TryGetHoveredSlot(Event.current.mousePosition, out _draggingSlot);
+        }
+        private void OnMouseUp() {
+            if (!_dragging) return;
+            _dragging = false;
+            if (!TryGetHoveredSlot(Event.current.mousePosition, out var releasedSlot)) return;
+            if (Equals(_draggingSlot, releasedSlot)) {
+                RemoveConnectionOfSlot(_draggingSlot);
+            }
+            else {
+                if (!CanConnect(_draggingSlot, releasedSlot)) return;
+                var sourceSlotInformation = _draggingSlot.isTarget ? releasedSlot : _draggingSlot;
+                var targetSlotInformation = _draggingSlot.isTarget ? _draggingSlot : releasedSlot;
+                Connect(
+                    sourceSlotInformation.lapsComponent,
+                    sourceSlotInformation.LogicSlot.id,
+                    targetSlotInformation.lapsComponent,
+                    targetSlotInformation.LogicSlot.id);
+            }
         }
         public void Connect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             if (!CanConnect(sourceComponent, sourceSlotId, targetComponent, targetSlotId)) return;
@@ -118,7 +152,7 @@ namespace LapsEditor {
             }
             return false;
         }
-        public void Draw() {
+        public void OnRepaint() {
             using (Scopes.HandlesGUI()) {
                 DrawAllSlots();
                 DrawAllConnections();
