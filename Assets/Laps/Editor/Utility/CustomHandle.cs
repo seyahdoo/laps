@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace LapsEditor {
     public static class CustomHandle {
+        //thanks to higekun @ https://answers.unity.com/questions/463207/how-do-you-make-a-custom-handle-respond-to-the-mou.html
         private static readonly int DragHandleHintHash = nameof(CustomHandle).GetHashCode();
         public delegate void DrawFunction(bool isHotControl, bool isClosestHandle);
         public delegate float DistanceFunction();
