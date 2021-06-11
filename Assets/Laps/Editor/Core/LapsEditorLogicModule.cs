@@ -10,6 +10,8 @@ namespace LapsEditor {
         private static readonly float SlotSpace = 12f;
         private static readonly float SlotMargin = 6f;
         private static readonly Color ConnectableConnectionColor = new Color(0, 1, 0, 1);
+        private static readonly Color ConnectionJustFiredColor = new Color(1f, 0f, 1f, 1f);
+        private static readonly float FireAnimationDuration = 1f;
         private static readonly Color NonConnectableConnectionColor = new Color(1, 0, 0, 1);
         private static readonly Color DanglingConnectionColor = new Color(1, 1, 1, 1);
         private static readonly int HandleHintHash = nameof(LapsEditorLogicModule).GetHashCode();
@@ -21,6 +23,11 @@ namespace LapsEditor {
         private SlotInformation _draggingSlot;
         private bool _dragging = false;
         private bool _logicEditModeEnabled = false;
+        private Dictionary<OutputFireTimingKey, float> _lastOutputFireTimes = new Dictionary<OutputFireTimingKey, float>();
+        private struct OutputFireTimingKey {
+            public LapsComponent lapsComponent;
+            public int slotId;
+        }
         public LapsEditorLogicModule(LapsEditor lapsEditor) {
             _editor = lapsEditor;
             SetupShortcuts();
@@ -41,7 +48,26 @@ namespace LapsEditor {
         public void OnSceneGUI() {
             _shortcutManager.HandleInput();
             if (!_logicEditModeEnabled) return;
+            SetupConnectionFireFeedbackActions();
             HandleTheHandle();
+        }
+        private void SetupConnectionFireFeedbackActions() {
+            foreach (var lapsComponent in _editor.allComponents) {
+                lapsComponent.OutputFired -= OutputFired;
+                lapsComponent.OutputFired += OutputFired;
+            }
+        }
+        private void OutputFired(LapsComponent lapsComponent, int slotId) {
+            var key = new OutputFireTimingKey() {
+                lapsComponent = lapsComponent,
+                slotId = slotId,
+            };
+            if (_lastOutputFireTimes.ContainsKey(key)) {
+                _lastOutputFireTimes[key] = Time.time;
+            }
+            else {
+                _lastOutputFireTimes.Add(key, Time.time);
+            }
         }
         private void HandleTheHandle() {
             int id = GUIUtility.GetControlID(HandleHintHash, FocusType.Passive);
@@ -209,17 +235,18 @@ namespace LapsEditor {
             foreach (var lapsComponent in _editor.allComponents) {
                 foreach (var connection in lapsComponent.connections) {
                     if (!TryGetDrawInformation(lapsComponent, false, connection.sourceSlotId, out var sourceDrawInformation)) continue;
-                    if (!TryGetDrawInformation(connection.targetComponent, true, connection.targetSlotId, out var destinationDrawInformation)) continue;
-                    DrawConnection(GetScreenPositionOfSlot(sourceDrawInformation), GetScreenPositionOfSlot(destinationDrawInformation), ConnectableConnectionColor);
+                    if (!TryGetDrawInformation(connection.targetComponent, true, connection.targetSlotId, out var targetDrawInformation)) continue;
+                    var sourcePosition = GetScreenPositionOfSlot(sourceDrawInformation);
+                    var destinationPosition = GetScreenPositionOfSlot(targetDrawInformation);
+                    var color = GetConnectionColor(sourceDrawInformation, targetDrawInformation);
+                    DrawConnection(sourcePosition, destinationPosition, color);
                 }
             }
         }
         private void DrawConnection(SlotInformation slot1, SlotInformation slot2) {
-            var color = CanConnect(slot1, slot2) 
-                ? ConnectableConnectionColor
-                : NonConnectableConnectionColor;
             var targetSlot = slot1.isTarget ? slot1 : slot2;
             var sourceSlot = slot1.isTarget ? slot2 : slot1;
+            var color = GetConnectionColor(sourceSlot, targetSlot);
             DrawConnection(GetScreenPositionOfSlot(sourceSlot),GetScreenPositionOfSlot(targetSlot), color);
         }
         private void DrawConnection(Vector2 sourcePosition, Vector2 destinationPosition, Color color) {
@@ -241,6 +268,20 @@ namespace LapsEditor {
                 color, 
                 null, 
                 4f);
+        }
+        private Color GetConnectionColor(SlotInformation sourceSlot, SlotInformation targetSlot) {
+            if (!CanConnect(sourceSlot, targetSlot)) return NonConnectableConnectionColor;
+            var key = new OutputFireTimingKey() {
+                lapsComponent = sourceSlot.lapsComponent,
+                slotId = sourceSlot.LogicSlot.id,
+            };
+            if (!_lastOutputFireTimes.TryGetValue(key, out float value)) return ConnectableConnectionColor;
+            var elapsed = Time.time - value;
+            if (elapsed > FireAnimationDuration) {
+                _lastOutputFireTimes.Remove(key);
+                return ConnectableConnectionColor;
+            }
+            return Color.Lerp(ConnectionJustFiredColor, ConnectableConnectionColor, elapsed / FireAnimationDuration);
         }
         private bool TryGetDrawInformation(LapsComponent lapsComponent, bool isInput, int connectionSourceSlotId, out SlotInformation slotInformation) {
             var key = new SlotInformationCacheKey(lapsComponent, isInput, connectionSourceSlotId);
