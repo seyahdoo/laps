@@ -1,7 +1,7 @@
+using System;
 using LapsRuntime;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace LapsEditModeTests {
     public class ConnectionTests {
@@ -28,8 +28,12 @@ namespace LapsEditModeTests {
             var comp2 = new GameObject().AddComponent<TestComponent>();
             LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(comp1, 1, comp2, 1);
             LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(comp2, 1, comp1, 1);
-            comp1.FireSlotOne();
-            LogAssert.Expect(LogType.Error, LapsComponent.LOGIC_DEPTH_LIMIT_ERROR_STRING);
+            try {
+                comp1.FireSlotOne();
+            }
+            catch (Exception e) {
+                Assert.AreEqual(LapsComponent.LOGIC_DEPTH_LIMIT_ERROR_STRING, e.Message);
+            }
         }
         [Test]
         [Ignore("not implemented yet")]

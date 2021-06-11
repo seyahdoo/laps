@@ -8,19 +8,15 @@ namespace LapsRuntime {
         private const int LOGIC_DEPTH_LIMIT = 10;
         private static int _logicFireDepth = 0;
         [HideInInspector, SerializeField] public List<Connection> connections = new List<Connection>();
-        #if UNITY_EDITOR
-            public Action<LapsComponent,int> OutputFired;
-        #endif
+        public Action<LapsComponent,int> OutputFired;
         public bool ErrorExists => false;
         protected object FireOutput(int slotId, object parameter = null) {
             _logicFireDepth++;
             if (_logicFireDepth >= LOGIC_DEPTH_LIMIT) {
-                Debug.LogError(LOGIC_DEPTH_LIMIT_ERROR_STRING);
-                return null;
+                _logicFireDepth = 0;
+                throw new Exception(LOGIC_DEPTH_LIMIT_ERROR_STRING);
             }
-            #if UNITY_EDITOR
-                OutputFired.Invoke(this, slotId);
-            #endif
+            OutputFired?.Invoke(this, slotId);
             foreach (var connection in connections) {
                 if (connection.sourceSlotId == slotId) {
                     connection.targetComponent.HandleInput(connection.targetSlotId, parameter, this);
