@@ -14,13 +14,12 @@ namespace LapsEditor {
         private static readonly Color DanglingConnectionColor = new Color(1, 1, 1, 1);
         private static readonly int HandleHintHash = nameof(LapsEditorLogicModule).GetHashCode();
 
-        
-        private LapsEditor _editor;
         private static List<LogicSlot> _slots = new List<LogicSlot>();
+        private LapsEditor _editor;
+        private ShortcutManager _shortcutManager;
         private Dictionary<SlotInformationCacheKey, SlotInformation> _slotInformationCacheDictionary = new Dictionary<SlotInformationCacheKey, SlotInformation>();
         private SlotInformation _draggingSlot;
         private bool _dragging = false;
-        private ShortcutManager _shortcutManager;
         private bool _logicEditModeEnabled = false;
         public LapsEditorLogicModule(LapsEditor lapsEditor) {
             _editor = lapsEditor;
