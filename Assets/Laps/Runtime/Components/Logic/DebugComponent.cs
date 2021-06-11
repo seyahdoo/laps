@@ -8,7 +8,7 @@ namespace LapsRuntime {
         public void FireDebugEvent() {
             FireOutput(0);
         }
-        protected override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
+        public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
             switch (slotId) {
                 case 0: Debug.Log($"{label}:{parameter}"); return null;
                 case 1: Debug.LogError($"{label}:{parameter}"); return null;

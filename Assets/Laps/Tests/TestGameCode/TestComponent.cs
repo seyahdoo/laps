@@ -6,15 +6,16 @@ using UnityEngine;
 namespace LapsEditModeTests {
     public class TestComponent : LapsComponent {
         public int inputCallCount = 0;
+        public List<object> inputList = new List<object>();
         public void FireEventBasic() {
             FireOutput(0);
         }
         public void FireSlotOne() {
             FireOutput(1);
         }
-        protected override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
+        public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
             switch (slotId) {
-                case 0: inputCallCount++; return null;
+                case 0: inputCallCount++; inputList.Add(parameter); return null;
                 case 1: FireSlotOne(); return null;
             }
             return null;

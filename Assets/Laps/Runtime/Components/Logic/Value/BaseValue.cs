@@ -13,7 +13,7 @@ namespace LapsRuntime {
                 Trigger();
             }
         }
-        protected override object HandleInput(int index, object argument, LapsComponent eventSource) {
+        public override object HandleInput(int index, object argument, LapsComponent eventSource) {
             switch(index) {
                 case 10: value  = (T)argument;  OnValueChanged(); break;
                 case 11: return value;

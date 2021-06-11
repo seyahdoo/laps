@@ -23,7 +23,7 @@ namespace LapsRuntime {
                 Trigger();
             }
         }
-        protected override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
+        public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
             switch (slotId) {
                 case 0: a = (float) parameter; OnValueChange(); return null;
                 case 1: b = (float) parameter; OnValueChange(); return null;

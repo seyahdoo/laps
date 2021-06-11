@@ -34,7 +34,7 @@ namespace LapsRuntime {
         //     _logicFireDepth--;
         //     return default;
         // }
-        protected virtual object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
+        public virtual object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
             return null;
         }
         public virtual void GetInputSlots(List<LogicSlot> slots) { }

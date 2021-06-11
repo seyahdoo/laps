@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace LapsRuntime {
     [LapsAddMenuOptions("Logic/Value/Number")]
     public class NumberValue : BaseValue<float> {
-        protected override object HandleInput(int index, object argument, LapsComponent eventSource) {
+        public override object HandleInput(int index, object argument, LapsComponent eventSource) {
             switch(index) {
                 case 21: value += (float)argument;  OnValueChanged(); return null;
                 case 22: value -= (float)argument;  OnValueChanged(); return null;
