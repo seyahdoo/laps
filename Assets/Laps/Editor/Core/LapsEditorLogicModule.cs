@@ -9,11 +9,13 @@ namespace LapsEditor {
         private static readonly float SlotRadius = 6f;
         private static readonly float SlotSpace = 12f;
         private static readonly float SlotMargin = 6f;
-        private static readonly Color ConnectableConnectionColor = new Color(0, 1, 0, 1);
-        private static readonly Color ConnectionJustFiredColor = new Color(1f, 0f, 1f, 1f);
+        private static readonly Color ConnectableConnectionColor = Color.white;
+        private static readonly Color ConnectionJustFiredColor = Color.green;
+        private static readonly Color NonConnectableConnectionColor = Color.red;
+        private static readonly Color DanglingConnectionColor = Color.white;
+        private static readonly Color ConnectionBackgroundColor = Color.black;
+        private static readonly Color ConnectionJustFiredBackgroundColor = Color.green;
         private static readonly float FireAnimationDuration = 1f;
-        private static readonly Color NonConnectableConnectionColor = new Color(1, 0, 0, 1);
-        private static readonly Color DanglingConnectionColor = new Color(1, 1, 1, 1);
         private static readonly int HandleHintHash = nameof(LapsEditorLogicModule).GetHashCode();
 
         private static List<LogicSlot> _slots = new List<LogicSlot>();
@@ -239,7 +241,8 @@ namespace LapsEditor {
                     var sourcePosition = GetScreenPositionOfSlot(sourceDrawInformation);
                     var destinationPosition = GetScreenPositionOfSlot(targetDrawInformation);
                     var color = GetConnectionColor(sourceDrawInformation, targetDrawInformation);
-                    DrawConnection(sourcePosition, destinationPosition, color);
+                    var backgroundColor = GetConnectionBackgroundColor(sourceDrawInformation, targetDrawInformation);
+                    DrawConnection(sourcePosition, destinationPosition, color, backgroundColor);
                 }
             }
         }
@@ -247,26 +250,27 @@ namespace LapsEditor {
             var targetSlot = slot1.isTarget ? slot1 : slot2;
             var sourceSlot = slot1.isTarget ? slot2 : slot1;
             var color = GetConnectionColor(sourceSlot, targetSlot);
-            DrawConnection(GetScreenPositionOfSlot(sourceSlot),GetScreenPositionOfSlot(targetSlot), color);
+            var backgroundColor = GetConnectionBackgroundColor(sourceSlot, targetSlot);
+            DrawConnection(GetScreenPositionOfSlot(sourceSlot),GetScreenPositionOfSlot(targetSlot), color, backgroundColor);
         }
-        private void DrawConnection(Vector2 sourcePosition, Vector2 destinationPosition, Color color) {
+        private void DrawConnection(Vector2 sourcePosition, Vector2 destinationPosition, Color color, Color backgroundColor) {
             var sourceDrawPosition = sourcePosition + Vector2.right * (SlotRadius * .9f);
             var destinationDrawPosition = destinationPosition - Vector2.right * (SlotRadius * .9f);
             Handles.DrawBezier(
-                sourceDrawPosition, 
-                destinationDrawPosition, 
-                sourceDrawPosition + Vector2.right * 80f, 
+                sourceDrawPosition,
+                destinationDrawPosition,
+                sourceDrawPosition + Vector2.right * 80f,
                 destinationDrawPosition + Vector2.left * 80f,
-                Color.black, 
-                null, 
+                backgroundColor,
+                null,
                 10f);
             Handles.DrawBezier(
-                sourceDrawPosition, 
-                destinationDrawPosition, 
-                sourceDrawPosition + Vector2.right * 80f, 
+                sourceDrawPosition,
+                destinationDrawPosition,
+                sourceDrawPosition + Vector2.right * 80f,
                 destinationDrawPosition + Vector2.left * 80f,
-                color, 
-                null, 
+                color,
+                null,
                 4f);
         }
         private Color GetConnectionColor(SlotInformation sourceSlot, SlotInformation targetSlot) {
@@ -282,6 +286,19 @@ namespace LapsEditor {
                 return ConnectableConnectionColor;
             }
             return Color.Lerp(ConnectionJustFiredColor, ConnectableConnectionColor, elapsed / FireAnimationDuration);
+        }
+        private Color GetConnectionBackgroundColor(SlotInformation sourceSlot, SlotInformation targetSlot) {
+            var key = new OutputFireTimingKey() {
+                lapsComponent = sourceSlot.lapsComponent,
+                slotId = sourceSlot.LogicSlot.id,
+            };
+            if (!_lastOutputFireTimes.TryGetValue(key, out float value)) return ConnectionBackgroundColor;
+            var elapsed = Time.time - value;
+            if (elapsed > FireAnimationDuration) {
+                _lastOutputFireTimes.Remove(key);
+                return ConnectableConnectionColor;
+            }
+            return Color.Lerp(ConnectionJustFiredBackgroundColor, ConnectionBackgroundColor, elapsed / FireAnimationDuration);
         }
         private bool TryGetDrawInformation(LapsComponent lapsComponent, bool isInput, int connectionSourceSlotId, out SlotInformation slotInformation) {
             var key = new SlotInformationCacheKey(lapsComponent, isInput, connectionSourceSlotId);
@@ -299,10 +316,10 @@ namespace LapsEditor {
             }
             else {
                 if (_draggingSlot.isTarget) {
-                    DrawConnection(Event.current.mousePosition, GetScreenPositionOfSlot(_draggingSlot), DanglingConnectionColor);
+                    DrawConnection(Event.current.mousePosition, GetScreenPositionOfSlot(_draggingSlot), DanglingConnectionColor, ConnectionBackgroundColor);
                 }
                 else {
-                    DrawConnection(GetScreenPositionOfSlot(_draggingSlot), Event.current.mousePosition, DanglingConnectionColor);
+                    DrawConnection(GetScreenPositionOfSlot(_draggingSlot), Event.current.mousePosition, DanglingConnectionColor, ConnectionBackgroundColor);
                 }
             }
         }
