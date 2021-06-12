@@ -17,13 +17,14 @@ namespace LapsRuntime {
                 throw new Exception(LOGIC_DEPTH_LIMIT_ERROR_STRING);
             }
             OutputFired?.Invoke(this, slotId);
+            object returnValue = null;
             foreach (var connection in connections) {
                 if (connection.sourceSlotId == slotId) {
-                    connection.targetComponent.HandleInput(connection.targetSlotId, parameter, this);
+                    returnValue = connection.targetComponent.HandleInput(connection.targetSlotId, parameter, this);
                 }
             }
             _logicFireDepth--;
-            return null;
+            return returnValue;
         }
         // protected OutputEnumerator FireOutputAdvanced() {
         //     _logicFireDepth++;
