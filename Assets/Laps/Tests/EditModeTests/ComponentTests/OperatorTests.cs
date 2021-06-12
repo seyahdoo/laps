@@ -74,6 +74,7 @@ namespace LapsEditModeTests {
             _operator.operationType = Operator.OperationType.Divide;
             _operator.triggerOnResultChange = true;
             _operator.triggerOnValueChange = false;
+            _operator.Awake();
             _operator.HandleInput(0, 6f, null);
             Assert.AreEqual(0, _testComponent.inputCallCount);
             _operator.HandleInput(0, 3f, null);
