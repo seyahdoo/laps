@@ -1,12 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
+using LapsEditModeTests;
 using LapsRuntime;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.TestTools;
 
-namespace LapsEditModeTests {
+namespace LapsPlayModeTests {
     public class DelayTests {
         private Delay _delay;
         private TestComponent _test;

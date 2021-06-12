@@ -1,6 +1,6 @@
 {
     "name": "LapsPlayModeTests",
-    "rootNamespace": "",
+    "rootNamespace": "LapsPlayModeTests",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
