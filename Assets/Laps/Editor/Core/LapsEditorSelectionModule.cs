@@ -55,7 +55,11 @@ namespace LapsEditor {
         }
         private Texture GetIconTexture(LapsComponent lapsComponent) {
             //todo cache this
-            return Resources.Load<Texture>($"LapsIcons/{lapsComponent.GetType().Name.ToLower()}");
+            var texture = Resources.Load<Texture>($"LapsIcons/{lapsComponent.GetType().Name.ToLower()}");
+            if (texture == null) {
+                texture = Resources.Load<Texture>($"LapsIcons/lapscomponent");
+            }
+            return texture;
         }
     }
 }
