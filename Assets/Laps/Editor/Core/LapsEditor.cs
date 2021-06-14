@@ -1,16 +1,14 @@
-using System;
-using System.Collections.Generic;
 using LapsRuntime;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
 namespace LapsEditor {
     public class LapsEditor {
+        public static LapsEditor instance;
         public LapsEditorSelectionModule lapsEditorSelectionModule;
         public LapsEditorLogicModule lapsEditorLogicModule;
         public LapsComponent[] allComponents;
         
-        public static LapsEditor instance;
         [InitializeOnLoadMethod]
         private static void Initialize() {
             if (instance == null) {
@@ -29,10 +27,13 @@ namespace LapsEditor {
             }
         }
         private void SceneGUI(SceneView obj) {
-            //todo optimize this
-            allComponents = Object.FindObjectsOfType<LapsComponent>(false);
+            FindAllLapsComponents();
             lapsEditorSelectionModule.OnSceneGUI();
             lapsEditorLogicModule.OnSceneGUI();
+        }
+        private void FindAllLapsComponents() {
+            //todo optimize this
+            allComponents = Object.FindObjectsOfType<LapsComponent>(false);
         }
     }
 }
