@@ -17,8 +17,30 @@ namespace LapsEditor {
         }
         private void DrawLapsIcons() {
             foreach (var lapsComponent in _editor.allComponents) {
-                DrawLapsIcon(lapsComponent);
+                if (ShoudDraw(lapsComponent)) {
+                    DrawLapsIcon(lapsComponent);
+                }
             }
+        }
+        private bool ShoudDraw(LapsComponent lapsComponent) {
+            var activeTransform = Selection.activeTransform;
+            if (activeTransform == null) {
+                if (lapsComponent.transform.parent == null) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                // if (lapsComponent.transform.parent == activeTransform) {
+                //     return true;
+                // }
+                if (lapsComponent.transform.parent == activeTransform.parent) {
+                    return true;
+                }
+            }
+            return false;
         }
         private void DrawLapsIcon(LapsComponent lapsComponent) {
             var rect = GetScreenSelectionRect(lapsComponent);
