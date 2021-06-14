@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using LapsRuntime;
 using UnityEditor;
-using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace LapsEditor {
     public class LapsEditor {
@@ -20,6 +21,12 @@ namespace LapsEditor {
             lapsEditorSelectionModule = new LapsEditorSelectionModule(this);
             lapsEditorLogicModule = new LapsEditorLogicModule(this);
             SceneView.duringSceneGui += SceneGUI;
+            EditorApplication.playModeStateChanged += EditorApplicationOnPlayModeStateChanged;
+        }
+        private void EditorApplicationOnPlayModeStateChanged(PlayModeStateChange state) {
+            if (state == PlayModeStateChange.ExitingEditMode || state == PlayModeStateChange.ExitingPlayMode) {
+                lapsEditorLogicModule.Reset();
+            }
         }
         private void SceneGUI(SceneView obj) {
             //todo optimize this

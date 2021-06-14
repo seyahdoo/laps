@@ -53,6 +53,9 @@ namespace LapsEditor {
             SetupConnectionFireFeedbackActions();
             HandleTheHandle();
         }
+        public void Reset() {
+            _lastOutputFireTimes.Clear();
+        }
         private void SetupConnectionFireFeedbackActions() {
             foreach (var lapsComponent in _editor.allComponents) {
                 lapsComponent.OutputFired -= OutputFired;
