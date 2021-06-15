@@ -1,17 +1,16 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace LapsRuntime {
     public class Collider2DListenerComponent : LapsComponent {
         public ActivationMode activationMode;
-        public FilterMode filterMode;
+        public TypeFilterMode typeFilterMode;
         public LayerMask layerMask = -1;
         public bool enabledOnAwake = true;
         private bool _enterEnabled;
         private bool _exitEnabled;
         private int _insideCount;
-        private void Awake() {
+        public void Awake() {
             _insideCount = 0;
             _enterEnabled = enabledOnAwake;
             _exitEnabled = enabledOnAwake;
@@ -33,9 +32,9 @@ namespace LapsRuntime {
         }
         private bool FilterAccepts(Collider2D otherCollider) {
             if (!LapsMath.LayerMaskContains(layerMask, otherCollider.gameObject.layer)) return false;
-            switch (filterMode) {
-                case FilterMode.AcceptCollider: if (otherCollider.isTrigger) return false; break;
-                case FilterMode.AcceptTrigger: if (!otherCollider.isTrigger) return false; break;
+            switch (typeFilterMode) {
+                case TypeFilterMode.AcceptCollider: if (otherCollider.isTrigger) return false; break;
+                case TypeFilterMode.AcceptTrigger: if (!otherCollider.isTrigger) return false; break;
             }
             return true;
         }
@@ -79,6 +78,22 @@ namespace LapsRuntime {
         private void FireObjectExited(Collider2D otherCollider) {
             FireOutput(1, otherCollider.attachedRigidbody);
         }
+        public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
+            switch (slotId) {
+                case 0: 
+                    _enterEnabled = true;
+                    _exitEnabled = true;
+                    enabled = true;
+                    return null;
+                case 1: 
+                    _enterEnabled = false;
+                    _exitEnabled = false;
+                    enabled = false;
+                    return null;
+                default:
+                    return null;
+            }
+        }
         public override void GetInputSlots(List<LogicSlot> slots) {
             slots.Add(new LogicSlot("enable", 0));
             slots.Add(new LogicSlot("disable", 1));
@@ -87,7 +102,7 @@ namespace LapsRuntime {
             slots.Add(new LogicSlot("object entered", 0, typeof(Rigidbody2D)));
             slots.Add(new LogicSlot("object exited", 1, typeof(Rigidbody2D)));
         }
-        public enum FilterMode {
+        public enum TypeFilterMode {
             AcceptAny = 0,
             AcceptCollider = 1,
             AcceptTrigger = 2,
