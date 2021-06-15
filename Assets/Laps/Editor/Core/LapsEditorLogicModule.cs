@@ -26,6 +26,8 @@ namespace LapsEditor {
         private bool _dragging = false;
         private bool _logicEditModeEnabled = false;
         private Dictionary<OutputFireTimingKey, float> _lastOutputFireTimes = new Dictionary<OutputFireTimingKey, float>();
+        private Tool _lastTool;
+        private bool _swappedTool = false;
         private struct OutputFireTimingKey {
             public LapsComponent lapsComponent;
             public int slotId;
@@ -49,9 +51,25 @@ namespace LapsEditor {
         }
         public void OnSceneGUI() {
             _shortcutManager.HandleInput();
+            HandleToolOnLogicMode();
             if (!_logicEditModeEnabled) return;
             SetupConnectionFireFeedbackActions();
             HandleTheHandle();
+        }
+        private void HandleToolOnLogicMode() {
+            if (_logicEditModeEnabled) {
+                if (!_swappedTool) {
+                    _swappedTool = true;
+                    _lastTool = Tools.current;
+                    Tools.current = Tool.None;
+                }
+            }
+            else {
+                if (_swappedTool) {
+                    _swappedTool = false;
+                    Tools.current = _lastTool;
+                }
+            }
         }
         public void Reset() {
             _lastOutputFireTimes.Clear();
