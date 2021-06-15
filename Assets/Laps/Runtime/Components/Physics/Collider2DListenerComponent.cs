@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,32 +24,12 @@ namespace LapsRuntime {
         private void HandleEnter(Collider2D otherCollider) {
             if (!_enterEnabled) return;
             if (!FilterAccepts(otherCollider)) return;
-            _insideCount++;
-            if (activationMode == ActivationMode.ActivateOnce) {
-                _enterEnabled = false;
-            }
-            if (activationMode == ActivationMode.ActivateCumulatively) {
-                if (_insideCount == 1) {
-                    FireObjectEntered(otherCollider);
-                    return;
-                }
-            }
-            FireObjectEntered(otherCollider);
+            HandleEnterActivation(otherCollider);
         }
         private void HandleExit(Collider2D otherCollider) {
             if (!_exitEnabled) return;
             if (!FilterAccepts(otherCollider)) return;
-            _insideCount--;
-            if (activationMode == ActivationMode.ActivateOnce) {
-                _exitEnabled = false;
-            }
-            if (activationMode == ActivationMode.ActivateCumulatively) {
-                if (_insideCount == 0) {
-                    FireObjectExited(otherCollider);
-                    return;
-                }
-            }
-            FireObjectExited(otherCollider);
+            HandleExitActivation(otherCollider);
         }
         private bool FilterAccepts(Collider2D otherCollider) {
             if (!LapsMath.LayerMaskContains(layerMask, otherCollider.gameObject.layer)) return false;
@@ -57,6 +38,40 @@ namespace LapsRuntime {
                 case FilterMode.AcceptTrigger: if (!otherCollider.isTrigger) return false; break;
             }
             return true;
+        }
+        private void HandleEnterActivation(Collider2D otherCollider) {
+            _insideCount++;
+            switch (activationMode) {
+                case ActivationMode.ActivateAlways:
+                    FireObjectEntered(otherCollider);
+                    break;
+                case ActivationMode.ActivateOnce:
+                    _enterEnabled = false;
+                    FireObjectEntered(otherCollider);
+                    break;
+                case ActivationMode.ActivateCumulatively:
+                    if (_insideCount == 1) {
+                        FireObjectEntered(otherCollider);
+                    }
+                    break;
+            }
+        }
+        private void HandleExitActivation(Collider2D otherCollider) {
+            _insideCount--;
+            switch (activationMode) {
+                case ActivationMode.ActivateAlways:
+                    FireObjectExited(otherCollider);
+                    break;
+                case ActivationMode.ActivateOnce:
+                    _exitEnabled = false;
+                    FireObjectExited(otherCollider);
+                    break;
+                case ActivationMode.ActivateCumulatively:
+                    if (_insideCount == 0) {
+                        FireObjectExited(otherCollider);
+                    }
+                    break;
+            }
         }
         private void FireObjectEntered(Collider2D otherCollider) {
             FireOutput(0, otherCollider.attachedRigidbody);
