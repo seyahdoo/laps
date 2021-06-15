@@ -10,30 +10,26 @@ using UnityEngine.UIElements;
 // ReSharper disable Unity.InefficientPropertyAccess
 
 namespace LapsPlayModeTests {
-    public class Collider2DListenerTests {
-        public Collider2DListenerComponent listener;
-        public BoxCollider2D colliderOne;
-        public BoxCollider2D colliderTwo;
+    public class ColliderListenerTests {
+        public ColliderListenerComponent listener;
+        public BoxCollider colliderOne;
+        public BoxCollider colliderTwo;
         public TestComponent testEnter;
         public TestComponent testExit;
         [SetUp]
         public void Setup() {
             var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Object.DestroyImmediate(cube.GetComponent<BoxCollider>());
-            cube.AddComponent<BoxCollider2D>();
-            listener = cube.AddComponent<Collider2DListenerComponent>();
+            listener = cube.AddComponent<ColliderListenerComponent>();
             listener.transform.position = Vector3.zero;
 
             cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Object.DestroyImmediate(cube.GetComponent<BoxCollider>());
-            var bodyOne = cube.AddComponent<Rigidbody2D>();
-            colliderOne = cube.AddComponent<BoxCollider2D>();
+            cube.AddComponent<Rigidbody>();
+            colliderOne = cube.GetComponent<BoxCollider>();
             colliderOne.transform.position = Vector3.right * 5f;
 
             cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            Object.DestroyImmediate(cube.GetComponent<BoxCollider>());
-            var bodyTwo = cube.AddComponent<Rigidbody2D>();
-            colliderTwo = cube.AddComponent<BoxCollider2D>();
+            cube.AddComponent<Rigidbody>();
+            colliderTwo = cube.GetComponent<BoxCollider>();
             colliderTwo.transform.position = Vector3.right * 10f;
 
             testEnter = new GameObject().AddComponent<TestComponent>();
@@ -82,7 +78,7 @@ namespace LapsPlayModeTests {
         }
         [Test]
         public void DefaultActivationModeIsAlways() {
-            Assert.AreEqual(Collider2DListenerComponent.ActivationMode.ActivateAlways, listener.activationMode);
+            Assert.AreEqual(ColliderListenerComponent.ActivationMode.ActivateAlways, listener.activationMode);
         }
         [UnityTest]
         public IEnumerator ActivationModeAlways() {
@@ -97,7 +93,7 @@ namespace LapsPlayModeTests {
         }
         [UnityTest]
         public IEnumerator ActivationModeOnce() {
-            listener.activationMode = Collider2DListenerComponent.ActivationMode.ActivateOnce;
+            listener.activationMode = ColliderListenerComponent.ActivationMode.ActivateOnce;
             Assert.AreEqual(0, testEnter.inputCallCount);
             colliderOne.transform.position = Vector3.zero;
             colliderTwo.transform.position = Vector3.zero;
@@ -107,7 +103,7 @@ namespace LapsPlayModeTests {
         }
         [UnityTest]
         public IEnumerator ActivationModeCumulative() {
-            listener.activationMode = Collider2DListenerComponent.ActivationMode.ActivateCumulatively;
+            listener.activationMode = ColliderListenerComponent.ActivationMode.ActivateCumulatively;
             Assert.AreEqual(0, testEnter.inputCallCount);
             colliderOne.transform.position = Vector3.zero;
             yield return new WaitForFixedUpdate();
@@ -122,7 +118,7 @@ namespace LapsPlayModeTests {
         }
         [Test]
         public void DefaultFilterModeIsAcceptAny() {
-            Assert.AreEqual(Collider2DListenerComponent.TypeFilterMode.AcceptAny, listener.typeFilterMode);
+            Assert.AreEqual(ColliderListenerComponent.TypeFilterMode.AcceptAny, listener.typeFilterMode);
         }
         [UnityTest]
         public IEnumerator FilterModeAny() {
@@ -138,7 +134,7 @@ namespace LapsPlayModeTests {
         }
         [UnityTest]
         public IEnumerator FilterModeCollider() {
-            listener.typeFilterMode = Collider2DListenerComponent.TypeFilterMode.AcceptCollider;
+            listener.typeFilterMode = ColliderListenerComponent.TypeFilterMode.AcceptCollider;
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
             Assert.AreEqual(0, testEnter.inputCallCount);
@@ -158,7 +154,7 @@ namespace LapsPlayModeTests {
         }
         [UnityTest]
         public IEnumerator FilterModeTrigger() {
-            listener.typeFilterMode = Collider2DListenerComponent.TypeFilterMode.AcceptTrigger;
+            listener.typeFilterMode = ColliderListenerComponent.TypeFilterMode.AcceptTrigger;
             yield return new WaitForFixedUpdate();
             yield return new WaitForFixedUpdate();
             Assert.AreEqual(0, testEnter.inputCallCount);
@@ -242,8 +238,8 @@ namespace LapsPlayModeTests {
             slots.Clear();
             listener.GetOutputSlots(slots);
             Assert.AreEqual(2, slots.Count);
-            Assert.AreEqual(new LogicSlot("object entered", 0, typeof(Rigidbody2D)), slots[0]);
-            Assert.AreEqual(new LogicSlot("object exited", 1, typeof(Rigidbody2D)), slots[1]);
+            Assert.AreEqual(new LogicSlot("object entered", 0, typeof(Rigidbody)), slots[0]);
+            Assert.AreEqual(new LogicSlot("object exited", 1, typeof(Rigidbody)), slots[1]);
         }
     }
 }
