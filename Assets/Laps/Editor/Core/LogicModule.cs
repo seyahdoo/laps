@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 
 namespace LapsEditor {
-    public class LapsEditorLogicModule {
+    public class LogicModule {
         private static readonly float SlotRadius = 6f;
         private static readonly float SlotSpace = 12f;
         private static readonly float SlotMargin = 6f;
@@ -16,7 +16,7 @@ namespace LapsEditor {
         private static readonly Color ConnectionBackgroundColor = Color.black;
         private static readonly Color ConnectionJustFiredBackgroundColor = Color.green;
         private static readonly float FireAnimationDuration = 1f;
-        private static readonly int HandleHintHash = nameof(LapsEditorLogicModule).GetHashCode();
+        private static readonly int HandleHintHash = nameof(LogicModule).GetHashCode();
 
         private static List<LogicSlot> _slots = new List<LogicSlot>();
         private LapsEditor _editor;
@@ -32,7 +32,7 @@ namespace LapsEditor {
             public LapsComponent lapsComponent;
             public int slotId;
         }
-        public LapsEditorLogicModule(LapsEditor lapsEditor) {
+        public LogicModule(LapsEditor lapsEditor) {
             _editor = lapsEditor;
             SetupShortcuts();
         }
@@ -81,7 +81,7 @@ namespace LapsEditor {
                 lapsComponent.OutputFired += OutputFired;
             }
         }
-        private void OutputFired(LapsComponent lapsComponent, int slotId) {
+        private void OutputFired(LapsComponent lapsComponent, int slotId, object _) {
             var key = new OutputFireTimingKey() {
                 lapsComponent = lapsComponent,
                 slotId = slotId,
@@ -148,13 +148,13 @@ namespace LapsEditor {
                     targetSlotInformation.LogicSlot.id);
             }
         }
-        public void Connect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
+        public static void Connect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             if (!CanConnect(sourceComponent, sourceSlotId, targetComponent, targetSlotId)) return;
             if (ConnectionExists(sourceComponent, sourceSlotId, targetComponent, targetSlotId)) return;
             sourceComponent.connections.Add(new Connection(sourceSlotId, targetComponent, targetSlotId));
             Undo.RegisterCompleteObjectUndo(sourceComponent, "connection connected");
         }
-        public void Disconnect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
+        public static void Disconnect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             for (int i = 0; i < sourceComponent.connections.Count; i++) {
                 var connection = sourceComponent.connections[i];
                 if (connection.sourceSlotId == sourceSlotId && connection.targetSlotId == targetSlotId && connection.targetComponent == targetComponent) {
@@ -192,10 +192,10 @@ namespace LapsEditor {
             var sourceSlot = slot1.isTarget ? slot2 : slot1;
             return CanConnect(sourceSlot.lapsComponent, sourceSlot.LogicSlot.id, targetSlot.lapsComponent,targetSlot.LogicSlot.id);
         }
-        private bool CanConnect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
+        private static bool CanConnect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             return true;
         }
-        private bool ConnectionExists(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
+        private static bool ConnectionExists(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             foreach (var connection in sourceComponent.connections) {
                 if (connection.sourceSlotId == sourceSlotId && connection.targetSlotId == targetSlotId && connection.targetComponent == targetComponent) {
                     return true;
@@ -247,7 +247,7 @@ namespace LapsEditor {
         private Vector2 GetScreenPositionOfSlot(SlotInformation slotInformation) {
             var worldPoint = slotInformation.lapsComponent.transform.position;
             var screenPosition =  HandleUtility.WorldToGUIPoint(worldPoint);
-            screenPosition -= new Vector2((slotInformation.isTarget ? 1: -1) * ((LapsEditorSelectionModule.SelectionIconSize.x / 2) + SlotRadius), LapsEditorSelectionModule.SelectionIconSize.y / 2 - SlotMargin);
+            screenPosition -= new Vector2((slotInformation.isTarget ? 1: -1) * ((SelectionModule.SelectionIconSize.x / 2) + SlotRadius), SelectionModule.SelectionIconSize.y / 2 - SlotMargin);
             screenPosition -= (slotInformation.index * SlotSpace * Vector2.down);
             return screenPosition;
         }

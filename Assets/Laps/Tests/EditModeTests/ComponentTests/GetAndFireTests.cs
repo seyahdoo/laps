@@ -1,3 +1,4 @@
+using LapsEditor;
 using LapsRuntime;
 using NUnit.Framework;
 using UnityEngine;
@@ -10,8 +11,8 @@ namespace LapsEditModeTests {
             var tester1 = new GameObject().AddComponent<TestComponent>();
             tester1.testReturnQueue.Enqueue(5f);
             var tester2 = new GameObject().AddComponent<TestComponent>();
-            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(getAndFire, 0, tester1, 2);
-            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(getAndFire, 1, tester2, 0);
+            LogicModule.Connect(getAndFire, 0, tester1, 2);
+            LogicModule.Connect(getAndFire, 1, tester2, 0);
             getAndFire.HandleInput(0, null, null);
             Assert.AreEqual(1, tester2.inputCallCount);
             Assert.AreEqual(5f, tester2.inputList[0]);

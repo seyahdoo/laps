@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+using LapsEditor;
 using LapsRuntime;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace LapsEditModeTests {
     public class ConnectionControlTests {
@@ -13,7 +11,7 @@ namespace LapsEditModeTests {
         public void Setup() {
             _connectionControl = new GameObject().AddComponent<ConnectionControl>();
             _testComponent = new GameObject().AddComponent<TestComponent>();
-            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(_connectionControl, 0, _testComponent, 0);
+            LogicModule.Connect(_connectionControl, 0, _testComponent, 0);
         }
         [Test]
         public void EnabledOnAwakeFalseWorks() {

@@ -1,3 +1,4 @@
+using LapsEditor;
 using LapsRuntime;
 using NUnit.Framework;
 using UnityEngine;
@@ -12,8 +13,8 @@ namespace LapsEditModeTests {
             _comparator = new GameObject().AddComponent<Comparator>();
             _testerTrue = new GameObject().AddComponent<TestComponent>();
             _testerFalse = new GameObject().AddComponent<TestComponent>();
-            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(_comparator, 0, _testerTrue, 0);
-            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(_comparator, 1, _testerFalse, 0);
+            LogicModule.Connect(_comparator, 0, _testerTrue, 0);
+            LogicModule.Connect(_comparator, 1, _testerFalse, 0);
         }
         [Test]
         public void ComparatorGraterThan() {

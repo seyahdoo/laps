@@ -1,5 +1,6 @@
 using System.Collections;
 using LapsEditModeTests;
+using LapsEditor;
 using LapsRuntime;
 using NUnit.Framework;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace LapsPlayModeTests {
         public void Setup() {
             _delay = new GameObject().AddComponent<Delay>();
             _test = new GameObject().AddComponent<TestComponent>();
-            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(_delay, 0, _test, 0);
+            LogicModule.Connect(_delay, 0, _test, 0);
         }
         [UnityTest]
         public IEnumerator ZeroAmountDelayDelaysOneFrame() {

@@ -1,3 +1,4 @@
+using LapsEditor;
 using LapsRuntime;
 using NUnit.Framework;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace LapsEditModeTests {
         public void Setup() {
             _operator = new GameObject().AddComponent<Operator>();
             _testComponent = new GameObject().AddComponent<TestComponent>();
-            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(_operator, 0, _testComponent, 0);
+            LogicModule.Connect(_operator, 0, _testComponent, 0);
         }
         [Test]
         public void AddOperation() {

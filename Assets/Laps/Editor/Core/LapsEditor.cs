@@ -5,8 +5,8 @@ using Object = UnityEngine.Object;
 namespace LapsEditor {
     public class LapsEditor {
         public static LapsEditor instance;
-        public LapsEditorSelectionModule lapsEditorSelectionModule;
-        public LapsEditorLogicModule lapsEditorLogicModule;
+        public SelectionModule SelectionModule;
+        public LogicModule LogicModule;
         public LapsComponent[] allComponents;
         
         [InitializeOnLoadMethod]
@@ -16,20 +16,20 @@ namespace LapsEditor {
             }
         }
         public LapsEditor() {
-            lapsEditorSelectionModule = new LapsEditorSelectionModule(this);
-            lapsEditorLogicModule = new LapsEditorLogicModule(this);
+            SelectionModule = new SelectionModule(this);
+            LogicModule = new LogicModule(this);
             SceneView.duringSceneGui += SceneGUI;
             EditorApplication.playModeStateChanged += EditorApplicationOnPlayModeStateChanged;
         }
         private void EditorApplicationOnPlayModeStateChanged(PlayModeStateChange state) {
             if (state == PlayModeStateChange.ExitingEditMode || state == PlayModeStateChange.ExitingPlayMode) {
-                lapsEditorLogicModule.Reset();
+                LogicModule.Reset();
             }
         }
         private void SceneGUI(SceneView obj) {
             FindAllLapsComponents();
-            lapsEditorSelectionModule.OnSceneGUI();
-            lapsEditorLogicModule.OnSceneGUI();
+            SelectionModule.OnSceneGUI();
+            LogicModule.OnSceneGUI();
         }
         private void FindAllLapsComponents() {
             //todo optimize this

@@ -4,10 +4,10 @@ using UnityEditor;
 using UnityEngine;
 
 namespace LapsEditor {
-    public class LapsEditorSelectionModule {
+    public class SelectionModule {
         internal static readonly Vector2 SelectionIconSize = new Vector2(30f, 30f);
         private LapsEditor _editor;
-        public LapsEditorSelectionModule(LapsEditor lapsEditor) {
+        public SelectionModule(LapsEditor lapsEditor) {
             _editor = lapsEditor;
         }
         public void OnSceneGUI() {

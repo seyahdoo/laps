@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using LapsEditModeTests;
+using LapsEditor;
 using LapsRuntime;
 using NUnit.Framework;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace LapsPlayModeTests {
         public void Setup() {
             _timer = new GameObject().AddComponent<Timer>();
             _test = new GameObject().AddComponent<TestComponent>();
-            LapsEditor.LapsEditor.instance.lapsEditorLogicModule.Connect(_timer, 0, _test, 0);
+            LogicModule.Connect(_timer, 0, _test, 0);
         }
         [UnityTest]
         public IEnumerator BasicSetup() {

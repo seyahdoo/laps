@@ -8,7 +8,7 @@ namespace LapsRuntime {
         private const int LOGIC_DEPTH_LIMIT = 10;
         private static int _logicFireDepth = 0;
         [HideInInspector, SerializeField] public List<Connection> connections = new List<Connection>();
-        public Action<LapsComponent,int> OutputFired;
+        public Action<LapsComponent, int, object> OutputFired;
         public bool ErrorExists => false;
         protected object FireOutput(int slotId, object parameter = null) {
             _logicFireDepth++;
@@ -16,7 +16,7 @@ namespace LapsRuntime {
                 _logicFireDepth = 0;
                 throw new Exception(LOGIC_DEPTH_LIMIT_ERROR_STRING);
             }
-            OutputFired?.Invoke(this, slotId);
+            OutputFired?.Invoke(this, slotId, parameter);
             object returnValue = null;
             foreach (var connection in connections) {
                 if (connection.sourceSlotId == slotId) {
