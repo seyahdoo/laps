@@ -189,6 +189,7 @@ namespace LapsEditor {
                 DrawDraggingAndHoverConnection();
                 DrawLabels();
             }
+            SceneView.RepaintAll();
         }
         private void DrawAllSlots() {
             _slotInformationCacheDictionary.Clear();
@@ -256,22 +257,22 @@ namespace LapsEditor {
             var backgroundColor = GetConnectionBackgroundColor(sourceSlot, targetSlot);
             DrawConnection(GetScreenPositionOfSlot(sourceSlot),GetScreenPositionOfSlot(targetSlot), color, backgroundColor);
         }
-        private void DrawConnection(Vector2 sourcePosition, Vector2 destinationPosition, Color color, Color backgroundColor) {
+        private void DrawConnection(Vector2 sourcePosition, Vector2 targetPosition, Color color, Color backgroundColor) {
             var sourceDrawPosition = sourcePosition + Vector2.right * (SlotRadius * .9f);
-            var destinationDrawPosition = destinationPosition - Vector2.right * (SlotRadius * .9f);
+            var targetDrawPosition = targetPosition - Vector2.right * (SlotRadius * .9f);
             Handles.DrawBezier(
                 sourceDrawPosition,
-                destinationDrawPosition,
+                targetDrawPosition,
                 sourceDrawPosition + Vector2.right * 80f,
-                destinationDrawPosition + Vector2.left * 80f,
+                targetDrawPosition + Vector2.left * 80f,
                 backgroundColor,
                 null,
                 10f);
             Handles.DrawBezier(
                 sourceDrawPosition,
-                destinationDrawPosition,
+                targetDrawPosition,
                 sourceDrawPosition + Vector2.right * 80f,
-                destinationDrawPosition + Vector2.left * 80f,
+                targetDrawPosition + Vector2.left * 80f,
                 color,
                 null,
                 4f);
@@ -369,6 +370,21 @@ namespace LapsEditor {
             return new Rect(position - Vector2.one * SlotRadius, Vector2.one * SlotRadius * 2);
         }
         private void DrawLabels() {
+            if (TryGetHoveredSlot(Event.current.mousePosition, out var slotInformation)) {
+                var screenPos = GetScreenPositionOfSlot(slotInformation)
+                                + (slotInformation.isTarget ? Vector2.left : Vector2.right) * SlotRadius;
+                var name = slotInformation.LogicSlot.name;
+                var style = new GUIStyle(GUIStyle.none);
+                style.padding = new RectOffset(4, 4, 1, 1);
+                var size = style.CalcSize(new GUIContent(name));
+                if (slotInformation.isTarget) {
+                    screenPos.x -= size.x;
+                }
+                screenPos.y -= size.y / 2f;
+                var rect = new Rect(screenPos, size);
+                EditorGUI.DrawRect(rect, Color.gray);
+                GUI.Label(rect, slotInformation.LogicSlot.name, style);
+            }
         }
         private struct SlotInformation {
             public LapsComponent lapsComponent;
