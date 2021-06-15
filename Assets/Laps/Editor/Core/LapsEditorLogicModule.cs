@@ -133,12 +133,14 @@ namespace LapsEditor {
             if (!CanConnect(sourceComponent, sourceSlotId, targetComponent, targetSlotId)) return;
             if (ConnectionExists(sourceComponent, sourceSlotId, targetComponent, targetSlotId)) return;
             sourceComponent.connections.Add(new Connection(sourceSlotId, targetComponent, targetSlotId));
+            Undo.RegisterCompleteObjectUndo(sourceComponent, "connection connected");
         }
         public void Disconnect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             for (int i = 0; i < sourceComponent.connections.Count; i++) {
                 var connection = sourceComponent.connections[i];
                 if (connection.sourceSlotId == sourceSlotId && connection.targetSlotId == targetSlotId && connection.targetComponent == targetComponent) {
                     sourceComponent.connections.RemoveAt(i);
+                    Undo.RegisterCompleteObjectUndo(sourceComponent, "connection removed");
                     return;
                 }
             }
