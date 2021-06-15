@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace LapsRuntime {
     public class Comparator : LapsComponent {
@@ -64,14 +63,14 @@ namespace LapsRuntime {
                 default:                         return false;
             }
         }
-        public override void GetInputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("set a", 0));            
-            slots.Add(new LogicSlot("set b", 1));
-            slots.Add(new LogicSlot("trigger", 2));
+        public override void GetInputSlots(SlotList slots) {
+            slots.Add("set a", 0);
+            slots.Add("set b", 1);
+            slots.Add("trigger", 2);
         }
-        public override void GetOutputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("true", 0));
-            slots.Add(new LogicSlot("false", 1));
+        public override void GetOutputSlots(SlotList slots) {
+            slots.Add("true", 0);
+            slots.Add("false", 1);
         }
     }
 }

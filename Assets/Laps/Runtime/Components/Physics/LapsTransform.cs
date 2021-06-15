@@ -13,8 +13,8 @@ namespace LapsRuntime {
                 default: return null;
             }
         }
-        public override void GetInputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("transform", 0, null, typeof(Transform)));
+        public override void GetInputSlots(SlotList slots) {
+            slots.Add("transform", 0, null, typeof(Transform));
         }
     }
 }

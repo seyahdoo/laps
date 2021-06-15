@@ -18,7 +18,7 @@ namespace LapsEditor {
         private static readonly float FireAnimationDuration = 1f;
         private static readonly int HandleHintHash = nameof(LogicModule).GetHashCode();
 
-        private static List<LogicSlot> _slots = new List<LogicSlot>();
+        private static SlotList _slots = new SlotList();
         private LapsEditor _editor;
         private ShortcutManager _shortcutManager;
         private Dictionary<SlotInformationCacheKey, SlotInformation> _slotInformationCacheDictionary = new Dictionary<SlotInformationCacheKey, SlotInformation>();

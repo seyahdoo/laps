@@ -9,8 +9,8 @@ namespace LapsRuntime {
                 default: return null;
             }
         }
-        public override void GetInputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("get position", 0, null, typeof(Vector3)));
+        public override void GetInputSlots(SlotList slots) {
+            slots.Add("get position", 0, null, typeof(Vector3));
         }
     }
 }

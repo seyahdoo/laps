@@ -22,14 +22,14 @@ namespace LapsEditModeTests {
             }
             return null;
         }
-        public override void GetInputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("log normal", 0));
-            slots.Add(new LogicSlot("fire slot 1", 1));
-            slots.Add(new LogicSlot("test return", 2));
+        public override void GetInputSlots(SlotList slots) {
+            slots.Add("log normal", 0);
+            slots.Add("fire slot 1", 1);
+            slots.Add("test return", 2);
         }
-        public override void GetOutputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("debug", 0));
-            slots.Add(new LogicSlot("slot 1", 1));
+        public override void GetOutputSlots(SlotList slots) {
+            slots.Add("debug", 0);
+            slots.Add("slot 1", 1);
         }
     }
 }

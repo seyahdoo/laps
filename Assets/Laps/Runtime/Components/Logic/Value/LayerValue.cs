@@ -27,13 +27,13 @@ namespace LapsRuntime {
         public void Trigger() {
             FireOutput(0, value);
         }
-        public override void GetInputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("set value", 10, typeof(float)));
-            slots.Add(new LogicSlot("get value", 11, null, typeof(float)));
-            slots.Add(new LogicSlot("trigger", 12));
+        public override void GetInputSlots(SlotList slots) {
+            slots.Add("set value", 10, typeof(float));
+            slots.Add("get value", 11, null, typeof(float));
+            slots.Add("trigger", 12);
         }
-        public override void GetOutputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("on value change", 0, typeof(float), null));
+        public override void GetOutputSlots(SlotList slots) {
+            slots.Add("on value change", 0, typeof(float), null);
         }
     }
 }

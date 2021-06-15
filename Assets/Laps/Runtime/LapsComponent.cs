@@ -40,8 +40,8 @@ namespace LapsRuntime {
         public virtual object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
             return null;
         }
-        public virtual void GetInputSlots(List<LogicSlot> slots) { }
-        public virtual void GetOutputSlots(List<LogicSlot> slots) { }
+        public virtual void GetInputSlots(SlotList slots) { }
+        public virtual void GetOutputSlots(SlotList slots) { }
         private void OnDrawGizmos() {
             //this is here because we want to be able to select laps components with unity selection rect,
             //unity selection rect wont select an object if it has no gizmos
@@ -97,6 +97,11 @@ namespace LapsRuntime {
             if (type == typeof(bool)) return Color.magenta;
             if (type == typeof(Color)) return Color.magenta;
             return Color.red;
+        }
+    }
+    public class SlotList : List<LogicSlot> {
+        public void Add(string name, int id, Type parameterType = null, Type returnType = null) {
+            this.Add(new LogicSlot(name, id, parameterType, returnType));
         }
     }
 }

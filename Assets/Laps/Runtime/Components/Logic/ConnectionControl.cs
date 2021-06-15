@@ -20,13 +20,13 @@ namespace LapsRuntime {
                 FireOutput(0, parameter);
             }
         }
-        public override void GetInputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("input", 0));
-            slots.Add(new LogicSlot("enable", 1));
-            slots.Add(new LogicSlot("disable", 2));
+        public override void GetInputSlots(SlotList slots) {
+            slots.Add("input", 0);
+            slots.Add("enable", 1);
+            slots.Add("disable", 2);
         }
-        public override void GetOutputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("output", 0));
+        public override void GetOutputSlots(SlotList slots) {
+            slots.Add("output", 0);
         }
     }
 }

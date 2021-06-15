@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using LapsRuntime;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace LapsEditModeTests {
     public class LapsTransformTests {
@@ -20,7 +17,7 @@ namespace LapsEditModeTests {
         }
         [Test]
         public void Slots() {
-            var slots = new List<LogicSlot>();
+            var slots = new SlotList();
             _lapsTransform.GetInputSlots(slots);
             Assert.AreEqual(1, slots.Count);
             Assert.AreEqual(new LogicSlot("transform", 0, null, typeof(Transform)), slots[0]);

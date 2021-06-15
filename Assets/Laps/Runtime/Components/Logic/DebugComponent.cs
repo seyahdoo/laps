@@ -15,12 +15,12 @@ namespace LapsRuntime {
             }
             return null;
         }
-        public override void GetInputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("log normal", 0));
-            slots.Add(new LogicSlot("log error", 1));
+        public override void GetInputSlots(SlotList slots) {
+            slots.Add("log normal", 0);
+            slots.Add("log error", 1);
         }
-        public override void GetOutputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("debug", 0));
+        public override void GetOutputSlots(SlotList slots) {
+            slots.Add("debug", 0);
         }
     }
 }

@@ -95,13 +95,13 @@ namespace LapsRuntime {
                     return null;
             }
         }
-        public override void GetInputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("enable", 0));
-            slots.Add(new LogicSlot("disable", 1));
+        public override void GetInputSlots(SlotList slots) {
+            slots.Add("enable", 0);
+            slots.Add("disable", 1);
         }
-        public override void GetOutputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("object entered", 0, typeof(Rigidbody)));
-            slots.Add(new LogicSlot("object exited", 1, typeof(Rigidbody)));
+        public override void GetOutputSlots(SlotList slots) {
+            slots.Add("object entered", 0, typeof(Rigidbody));
+            slots.Add("object exited", 1, typeof(Rigidbody));
         }
         public enum TypeFilterMode {
             AcceptAny = 0,

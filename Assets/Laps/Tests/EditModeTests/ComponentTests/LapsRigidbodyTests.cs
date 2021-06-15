@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using LapsRuntime;
 using NUnit.Framework;
 using UnityEngine;
@@ -24,7 +23,7 @@ namespace LapsEditModeTests {
         }
         [Test]
         public void Slots() {
-            var slots = new List<LogicSlot>();
+            var slots = new SlotList();
             comp3D.GetInputSlots(slots);
             Assert.AreEqual(new LogicSlot("body", 0, null, typeof(Rigidbody)), slots[0]);
             Assert.AreEqual(new LogicSlot("transform", 1, null, typeof(Transform)), slots[1]);

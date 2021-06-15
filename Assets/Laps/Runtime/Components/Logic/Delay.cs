@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,12 +32,12 @@ namespace LapsRuntime {
             };
             _flows.Add(flow);
         }
-        public override void GetOutputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("output", 0));
+        public override void GetOutputSlots(SlotList slots) {
+            slots.Add("output", 0);
         }
-        public override void GetInputSlots(List<LogicSlot> slots) {
-            slots.Add(new LogicSlot("input", 0));
-            slots.Add(new LogicSlot("set delay amount", 1, typeof(float)));
+        public override void GetInputSlots(SlotList slots) {
+            slots.Add("input", 0);
+            slots.Add("set delay amount", 1, typeof(float));
         }
     }
     

@@ -12,12 +12,12 @@ namespace LapsRuntime {
             }
             return base.HandleInput(index, argument, eventSource);;
         }
-        public override void GetInputSlots(List<LogicSlot> slots) {
+        public override void GetInputSlots(SlotList slots) {
             base.GetInputSlots(slots);
-            slots.Add(new LogicSlot("increment value by", 21, typeof(float)));
-            slots.Add(new LogicSlot("decrement value by", 22, typeof(float)));
-            slots.Add(new LogicSlot("increment value by one", 23));
-            slots.Add(new LogicSlot("decrement value by one", 24));
+            slots.Add("increment value by", 21, typeof(float));
+            slots.Add("decrement value by", 22, typeof(float));
+            slots.Add("increment value by one", 23);
+            slots.Add("decrement value by one", 24);
         }
     }
 }

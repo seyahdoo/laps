@@ -1,12 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using LapsEditModeTests;
 using LapsEditor;
 using LapsRuntime;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using UnityEngine.UIElements;
 // ReSharper disable Unity.InefficientPropertyAccess
 
 namespace LapsPlayModeTests {
@@ -230,7 +228,7 @@ namespace LapsPlayModeTests {
         }
         [Test]
         public void Slots() {
-            var slots = new List<LogicSlot>();
+            var slots = new SlotList();
             listener.GetInputSlots(slots);
             Assert.AreEqual(2, slots.Count);
             Assert.AreEqual(new LogicSlot("enable", 0), slots[0]);
