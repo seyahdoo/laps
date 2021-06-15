@@ -52,9 +52,10 @@ namespace LapsEditor {
         public void OnSceneGUI() {
             _shortcutManager.HandleInput();
             HandleToolOnLogicMode();
-            if (!_logicEditModeEnabled) return;
-            SetupConnectionFireFeedbackActions();
-            HandleTheHandle();
+            if (_logicEditModeEnabled) {
+                SetupConnectionFireFeedbackActions();
+                HandleTheHandle();
+            }
         }
         private void HandleToolOnLogicMode() {
             if (_logicEditModeEnabled) {
