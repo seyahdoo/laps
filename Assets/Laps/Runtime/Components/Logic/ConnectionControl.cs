@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 
 namespace LapsRuntime {
+    [LapsAddMenuOptions("Logic/ConnectionControl")]
     public class ConnectionControl : LapsComponent {
         public bool enabledOnAwake = true;
         private bool _enabled = false;

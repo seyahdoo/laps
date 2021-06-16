@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace LapsRuntime {
-    [LapsAddMenuOptions("Logic/Value/Color")]
+    [LapsAddMenuOptions("Value/Color")]
     public class ColorValue : BaseValue<Color> {
     }
 }

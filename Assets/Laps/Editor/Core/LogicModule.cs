@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using LapsEditor.Utility;
 using LapsRuntime;
 using UnityEditor;
@@ -29,8 +30,8 @@ namespace LapsEditor {
         private Tool _lastTool;
         private bool _swappedTool = false;
         private struct OutputFireTimingKey {
-            public LapsComponent lapsComponent;
-            public int slotId;
+            [UsedImplicitly] public LapsComponent lapsComponent;
+            [UsedImplicitly] public int slotId;
         }
         public LogicModule(LapsEditor lapsEditor) {
             _editor = lapsEditor;
@@ -192,7 +193,9 @@ namespace LapsEditor {
             var sourceSlot = slot1.isTarget ? slot2 : slot1;
             return CanConnect(sourceSlot.lapsComponent, sourceSlot.LogicSlot.id, targetSlot.lapsComponent,targetSlot.LogicSlot.id);
         }
+        // ReSharper disable UnusedParameter.Local
         private static bool CanConnect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
+            // ReSharper restore UnusedParameter.Local
             return true;
         }
         private static bool ConnectionExists(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
@@ -266,7 +269,7 @@ namespace LapsEditor {
                     var sourcePosition = GetScreenPositionOfSlot(sourceDrawInformation);
                     var destinationPosition = GetScreenPositionOfSlot(targetDrawInformation);
                     var color = GetConnectionColor(sourceDrawInformation, targetDrawInformation);
-                    var backgroundColor = GetConnectionBackgroundColor(sourceDrawInformation, targetDrawInformation);
+                    var backgroundColor = GetConnectionBackgroundColor(sourceDrawInformation);
                     DrawConnection(sourcePosition, destinationPosition, color, backgroundColor);
                 }
             }
@@ -275,7 +278,7 @@ namespace LapsEditor {
             var targetSlot = slot1.isTarget ? slot1 : slot2;
             var sourceSlot = slot1.isTarget ? slot2 : slot1;
             var color = GetConnectionColor(sourceSlot, targetSlot);
-            var backgroundColor = GetConnectionBackgroundColor(sourceSlot, targetSlot);
+            var backgroundColor = GetConnectionBackgroundColor(sourceSlot);
             DrawConnection(GetScreenPositionOfSlot(sourceSlot),GetScreenPositionOfSlot(targetSlot), color, backgroundColor);
         }
         private void DrawConnection(Vector2 sourcePosition, Vector2 targetPosition, Color color, Color backgroundColor) {
@@ -312,7 +315,7 @@ namespace LapsEditor {
             }
             return Color.Lerp(ConnectionJustFiredColor, ConnectableConnectionColor, elapsed / FireAnimationDuration);
         }
-        private Color GetConnectionBackgroundColor(SlotInformation sourceSlot, SlotInformation targetSlot) {
+        private Color GetConnectionBackgroundColor(SlotInformation sourceSlot) {
             var key = new OutputFireTimingKey() {
                 lapsComponent = sourceSlot.lapsComponent,
                 slotId = sourceSlot.LogicSlot.id,
@@ -420,9 +423,9 @@ namespace LapsEditor {
             }
         }
         private struct SlotInformationCacheKey {
-            public LapsComponent lapsComponent;
-            public bool isInput;
-            public int slotId;
+            [UsedImplicitly] public LapsComponent lapsComponent;
+            [UsedImplicitly] public bool isInput;
+            [UsedImplicitly] public int slotId;
             public SlotInformationCacheKey(LapsComponent lapsComponent, bool isInput, int slotId) {
                 this.lapsComponent = lapsComponent;
                 this.isInput = isInput;

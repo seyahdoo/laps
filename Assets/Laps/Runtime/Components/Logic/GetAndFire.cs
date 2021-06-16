@@ -1,5 +1,6 @@
 
 namespace LapsRuntime {
+    [LapsAddMenuOptions("Logic/Get And Fire")]
     public class GetAndFire : LapsComponent {
         public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
             switch (slotId) {

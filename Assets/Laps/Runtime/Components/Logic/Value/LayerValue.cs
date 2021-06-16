@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 
 namespace LapsRuntime {
-    [LapsAddMenuOptions("Logic/Value/Layer")]
+    [LapsAddMenuOptions("Value/Layer")]
     public class LayerValue : LapsComponent {
         [Layer] public int value;
         public bool triggerOnAwake = false;
@@ -33,7 +32,7 @@ namespace LapsRuntime {
             slots.Add("trigger", 12);
         }
         public override void GetOutputSlots(SlotList slots) {
-            slots.Add("on value change", 0, typeof(float), null);
+            slots.Add("on value change", 0, typeof(float));
         }
     }
 }

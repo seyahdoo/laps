@@ -1,5 +1,6 @@
 
 namespace LapsRuntime {
+    [LapsAddMenuOptions("Other/Start Event")]
     public class StartEventComponent : LapsComponent {
         private void Update() {
             enabled = false;

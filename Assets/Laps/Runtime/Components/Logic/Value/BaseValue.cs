@@ -1,10 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace LapsRuntime {
-    public class BaseValue<T> : LapsComponent {
+    public abstract class BaseValue<T> : LapsComponent {
         public T value;
         public bool triggerOnAwake = false;
         public bool triggerOnChange = true;

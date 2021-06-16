@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-namespace LapsRuntime
-{
-    public class PlayerPrefsObject : MonoBehaviour {
+namespace LapsRuntime {
+    [LapsAddMenuOptions("Other/Player Prefs")]
+    public class PlayerPrefsComponent : LapsComponent {
 
     }
 }

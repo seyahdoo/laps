@@ -1,6 +1,7 @@
 using System;
 
 namespace LapsRuntime {
+    [LapsAddMenuOptions("Logic/Comparator")]
     public class Comparator : LapsComponent {
         public enum ComparisonMode {
             LessThan = 0,
@@ -39,7 +40,6 @@ namespace LapsRuntime {
                 var currentResult = Evaluate();
                 if (currentResult != _lastTriggerResult) {
                     Trigger();
-                    return;
                 }
             }
         }

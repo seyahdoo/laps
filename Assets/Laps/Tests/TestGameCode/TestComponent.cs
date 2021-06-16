@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using LapsRuntime;
-using UnityEngine;
 
 namespace LapsEditModeTests {
+    [LapsAddMenuOptions("Other/Test", 0, true)]
     public class TestComponent : LapsComponent {
         public int inputCallCount = 0;
         public List<object> inputList = new List<object>();

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace LapsRuntime {
+    [LapsAddMenuOptions("Other/Audio Clip Player")]
     [RequireComponent(typeof(AudioSource))]
     public class AudioClipPlayer : LapsComponent {
         public List<AudioClip> startClips = new List<AudioClip>();

@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LapsRuntime {
+    [LapsAddMenuOptions("Physics/Laps Transform")]
     public class LapsTransform : LapsComponent {
         private Transform _transform;
         public void Awake() {

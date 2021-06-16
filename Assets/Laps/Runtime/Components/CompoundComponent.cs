@@ -1,9 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace LapsRuntime {
+    [LapsAddMenuOptions("Other/Compound")]
     public class CompoundComponent : LapsComponent {
     }
 }

@@ -24,13 +24,13 @@ namespace LapsPlayModeTests {
 
             cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             Object.DestroyImmediate(cube.GetComponent<BoxCollider>());
-            var bodyOne = cube.AddComponent<Rigidbody2D>();
+            cube.AddComponent<Rigidbody2D>();
             colliderOne = cube.AddComponent<BoxCollider2D>();
             colliderOne.transform.position = Vector3.right * 5f;
 
             cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             Object.DestroyImmediate(cube.GetComponent<BoxCollider>());
-            var bodyTwo = cube.AddComponent<Rigidbody2D>();
+            cube.AddComponent<Rigidbody2D>();
             colliderTwo = cube.AddComponent<BoxCollider2D>();
             colliderTwo.transform.position = Vector3.right * 10f;
 

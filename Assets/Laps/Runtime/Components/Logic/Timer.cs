@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace LapsRuntime {
+    [LapsAddMenuOptions("Logic/Timer")]
     public class Timer : LapsComponent {
         public List<float> times = new List<float>() {.5f};
         public bool startOnAwake = false;

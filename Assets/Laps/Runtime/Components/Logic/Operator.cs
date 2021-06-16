@@ -1,10 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace LapsRuntime {
+    [LapsAddMenuOptions("Logic/Operator")]
     public class Operator : LapsComponent {
         public float a;
         public float b;
@@ -35,7 +31,6 @@ namespace LapsRuntime {
                 if (!LapsMath.ApproximatelyClose(result, _lastResult)) {
                     _lastResult = result;
                     FireOutput(0, _lastResult);
-                    return;
                 }
             }
         }

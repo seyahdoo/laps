@@ -1,8 +1,7 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LapsRuntime {
+    [LapsAddMenuOptions("Physics/Collider Listener")]
     public class ColliderListenerComponent : LapsComponent {
         public ActivationMode activationMode;
         public TypeFilterMode typeFilterMode;

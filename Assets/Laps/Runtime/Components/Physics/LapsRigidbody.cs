@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LapsRuntime  {
+    [LapsAddMenuOptions("Physics/Laps Rigidbody")]
     [RequireComponent(typeof(Rigidbody))]
     public class LapsRigidbody : LapsComponent {
         private Rigidbody _body;
