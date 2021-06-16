@@ -54,9 +54,11 @@ namespace LapsRuntime {
             _state = State.StoppingReadyToPlayEnd;
         }
         public void StopImmidiately() {
+            if (_state == State.Stopped) return;
             _currentClip = null;
             _state = State.Stopped;
             _source.Stop();
+            OnStopped();
         }
         private void Update() {
             if (_state != State.Stopped && !_source.isPlaying) {
@@ -66,6 +68,7 @@ namespace LapsRuntime {
                 _currentClip = PickNewClip();
                 if (_currentClip == null) {
                     _state = State.Stopped; 
+                    OnStopped();
                     return;
                 }
                 _source.PlayOneShot(_currentClip);
@@ -83,6 +86,18 @@ namespace LapsRuntime {
                 case State.StoppingPlayingEnd:
                     return LapsMath.PickRandomFromList(endClips);
                 default: return null;
+            }
+        }
+        private void OnStopped() {
+            FireOutput(0);
+        }
+        public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
+            switch (slotId) {
+                case 0: Play();            return null;
+                case 1: Pause();           return null;
+                case 2: Stop();            return null;
+                case 3: StopImmidiately(); return null;
+                default:                   return null;
             }
         }
         public override void GetOutputSlots(SlotList slots) {

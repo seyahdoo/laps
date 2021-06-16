@@ -1,4 +1,6 @@
 using System.Collections;
+using LapsEditModeTests;
+using LapsEditor;
 using LapsRuntime;
 using NUnit.Framework;
 using UnityEditor;
@@ -126,6 +128,27 @@ namespace LapsPlayModeTests {
             Assert.AreEqual(null, audioClipPlayer.CurrentPlayingClip);
         }
         [UnityTest]
+        public IEnumerator StopImmediately() {
+            audioClipPlayer.startClips.Add(TestClipOne);
+            audioClipPlayer.loopClips.Add(TestClipTwo);
+            audioClipPlayer.endClips.Add(TestClipOne);
+            audioClipPlayer.Play();
+            Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipOne.length);
+            yield return new WaitForSeconds(TestClipTwo.length/2f);
+            Assert.AreEqual(TestClipTwo, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipTwo.length);
+            Assert.AreEqual(TestClipTwo, audioClipPlayer.CurrentPlayingClip);
+            Assert.AreEqual(true, audioSource.isPlaying);
+            audioClipPlayer.StopImmidiately();
+            Assert.AreEqual(false, audioSource.isPlaying);
+            Assert.AreEqual(null, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipTwo.length);
+            yield return new WaitForSeconds(TestClipOne.length);
+            Assert.AreEqual(null, audioClipPlayer.CurrentPlayingClip);
+            Assert.AreEqual(false, audioSource.isPlaying);
+        }
+        [UnityTest]
         public IEnumerator PauseAndContunie() {
             audioClipPlayer.startClips.Add(TestClipOne);
             audioClipPlayer.Play();
@@ -162,23 +185,107 @@ namespace LapsPlayModeTests {
         }
         [Test]
         public void PlaySlot() {
-            Assert.Fail();
+            audioClipPlayer.playOnAwake = false;
+            audioClipPlayer.startClips.Add(TestClipOne);
+            audioClipPlayer.HandleInput(0, null, null);
+            Assert.AreEqual(true, audioSource.isPlaying);
+            Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
         }
-        [Test]
-        public void PauseSlot() {
-            Assert.Fail();
+        [UnityTest]
+        public IEnumerator PauseSlot() {
+            audioClipPlayer.startClips.Add(TestClipOne);
+            audioClipPlayer.Play();
+            Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipOne.length/2f);
+            audioClipPlayer.HandleInput(1, null, null);
+            Assert.AreEqual(false ,audioSource.isPlaying);
+            audioClipPlayer.Play();
+            Assert.AreEqual(true ,audioSource.isPlaying);
+            Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipOne.length);
+            Assert.AreEqual(false ,audioSource.isPlaying);
         }
-        [Test]
-        public void StopSlot() {
-            Assert.Fail();
+        [UnityTest]
+        public IEnumerator StopSlot() {
+            audioClipPlayer.startClips.Add(TestClipOne);
+            audioClipPlayer.loopClips.Add(TestClipTwo);
+            audioClipPlayer.endClips.Add(TestClipOne);
+            audioClipPlayer.Play();
+            Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipOne.length);
+            yield return new WaitForSeconds(TestClipTwo.length/2f);
+            Assert.AreEqual(TestClipTwo, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipTwo.length);
+            Assert.AreEqual(TestClipTwo, audioClipPlayer.CurrentPlayingClip);
+            Assert.AreEqual(true, audioSource.isPlaying);
+            audioClipPlayer.HandleInput(2, null, null);
+            yield return new WaitForSeconds(TestClipTwo.length);
+            Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
+            Assert.AreEqual(true, audioSource.isPlaying);
+            yield return new WaitForSeconds(TestClipOne.length);
+            Assert.AreEqual(false, audioSource.isPlaying);
+            Assert.AreEqual(null, audioClipPlayer.CurrentPlayingClip);
         }
-        [Test]
-        public void StopImmidiatelySlot() {
-            Assert.Fail();
+        [UnityTest]
+        public IEnumerator StopImmidiatelySlot() {
+            audioClipPlayer.startClips.Add(TestClipOne);
+            audioClipPlayer.loopClips.Add(TestClipTwo);
+            audioClipPlayer.endClips.Add(TestClipOne);
+            audioClipPlayer.Play();
+            Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipOne.length);
+            yield return new WaitForSeconds(TestClipTwo.length/2f);
+            Assert.AreEqual(TestClipTwo, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipTwo.length);
+            Assert.AreEqual(TestClipTwo, audioClipPlayer.CurrentPlayingClip);
+            Assert.AreEqual(true, audioSource.isPlaying);
+            audioClipPlayer.HandleInput(3, null, null);
+            Assert.AreEqual(false, audioSource.isPlaying);
+            Assert.AreEqual(null, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipTwo.length);
+            yield return new WaitForSeconds(TestClipOne.length);
+            Assert.AreEqual(null, audioClipPlayer.CurrentPlayingClip);
+            Assert.AreEqual(false, audioSource.isPlaying);
         }
-        [Test]
-        public void OnEndSlot() {
-            Assert.Fail();
+        [UnityTest]
+        public IEnumerator OnEndSlot() {
+            audioClipPlayer.startClips.Add(TestClipOne);
+            audioClipPlayer.Play();
+            var testComponent = new GameObject().AddComponent<TestComponent>();
+            LogicModule.Connect(audioClipPlayer, 0, testComponent, 0);
+            yield return new WaitForSeconds(TestClipOne.length / 2f);
+            Assert.AreEqual(0, testComponent.inputCallCount);
+            yield return new WaitForSeconds(TestClipOne.length);
+            Assert.AreEqual(1, testComponent.inputCallCount);
+        }
+        [UnityTest]
+        public IEnumerator StopImmidiatelyOnEndSlot() {
+            audioClipPlayer.startClips.Add(TestClipOne);
+            audioClipPlayer.Play();
+            var testComponent = new GameObject().AddComponent<TestComponent>();
+            LogicModule.Connect(audioClipPlayer, 0, testComponent, 0);
+            yield return new WaitForSeconds(TestClipOne.length / 2f);
+            Assert.AreEqual(0, testComponent.inputCallCount);
+            audioClipPlayer.StopImmidiately();
+            Assert.AreEqual(1, testComponent.inputCallCount);
+            yield return new WaitForSeconds(TestClipOne.length);
+            Assert.AreEqual(1, testComponent.inputCallCount);
+        }
+        [UnityTest]
+        public IEnumerator StopImmidiatelyWhileStopped() {
+            audioClipPlayer.startClips.Add(TestClipOne);
+            audioClipPlayer.Play();
+            var testComponent = new GameObject().AddComponent<TestComponent>();
+            LogicModule.Connect(audioClipPlayer, 0, testComponent, 0);
+            yield return new WaitForSeconds(TestClipOne.length / 2f);
+            Assert.AreEqual(0, testComponent.inputCallCount);
+            audioClipPlayer.StopImmidiately();
+            Assert.AreEqual(1, testComponent.inputCallCount);
+            audioClipPlayer.StopImmidiately();
+            Assert.AreEqual(1, testComponent.inputCallCount);
+            yield return new WaitForSeconds(TestClipOne.length);
+            audioClipPlayer.StopImmidiately();
+            Assert.AreEqual(1, testComponent.inputCallCount);
         }
         [Test]
         public void Slots() {
