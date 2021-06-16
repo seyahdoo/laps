@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LapsRuntime {
@@ -15,6 +16,14 @@ namespace LapsRuntime {
         }
         public static bool LayerMaskContains(LayerMask layerMask, int layer) {
             return layerMask == (layerMask | (1 << layer));
+        }
+        public static T PickRandomFromArray<T>(T[] array) {
+            if (array.Length <= 0) return default;
+            return array[Random.Range(0, array.Length)];
+        }
+        public static T PickRandomFromList<T>(List<T> list) {
+            if (list.Count <= 0) return default;
+            return list[Random.Range(0, list.Count)];
         }
     }
 }
