@@ -48,8 +48,7 @@ namespace LapsPlayModeTests {
         public IEnumerator OneClipInStartClip() {
             audioClipPlayer.startClips.Add(TestClipOne);
             audioClipPlayer.Play();
-            yield return null;
-            yield return null;
+            yield return new WaitForEndOfFrame();
             Assert.AreEqual(true, audioSource.isPlaying);
             Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
         }
@@ -90,7 +89,6 @@ namespace LapsPlayModeTests {
             Random.InitState(42);
             yield return new WaitForSeconds(TestClipOne.length/2f);
             yield return new WaitForSeconds(TestClipTwo.length/2f);
-            yield return new WaitForEndOfFrame();
             Assert.AreEqual(TestClipTwo, audioClipPlayer.CurrentPlayingClip);
         }
         [UnityTest]
@@ -100,11 +98,9 @@ namespace LapsPlayModeTests {
             audioClipPlayer.Play();
             Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
             yield return new WaitForSeconds(TestClipOne.length);
-            yield return new WaitForSeconds(TestClipTwo.length);
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(TestClipTwo.length/2f);
             Assert.AreEqual(TestClipTwo, audioClipPlayer.CurrentPlayingClip);
-            yield return new WaitForSeconds(TestClipTwo.length/2f);
-            yield return new WaitForSeconds(TestClipTwo.length/2f);
+            yield return new WaitForSeconds(TestClipTwo.length);
             Assert.AreEqual(TestClipTwo, audioClipPlayer.CurrentPlayingClip);
             Assert.AreEqual(true, audioSource.isPlaying);
         }
@@ -116,11 +112,9 @@ namespace LapsPlayModeTests {
             audioClipPlayer.Play();
             Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
             yield return new WaitForSeconds(TestClipOne.length);
-            yield return new WaitForSeconds(TestClipTwo.length);
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(TestClipTwo.length/2f);
             Assert.AreEqual(TestClipTwo, audioClipPlayer.CurrentPlayingClip);
-            yield return new WaitForSeconds(TestClipTwo.length/2f);
-            yield return new WaitForSeconds(TestClipTwo.length/2f);
+            yield return new WaitForSeconds(TestClipTwo.length);
             Assert.AreEqual(TestClipTwo, audioClipPlayer.CurrentPlayingClip);
             Assert.AreEqual(true, audioSource.isPlaying);
             audioClipPlayer.Stop();
@@ -133,18 +127,58 @@ namespace LapsPlayModeTests {
         }
         [UnityTest]
         public IEnumerator PauseAndContunie() {
-            yield return null;
-            Assert.Fail("");
+            audioClipPlayer.startClips.Add(TestClipOne);
+            audioClipPlayer.Play();
+            Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipOne.length/2f);
+            audioClipPlayer.Pause();
+            Assert.AreEqual(false ,audioSource.isPlaying);
+            audioClipPlayer.Play();
+            Assert.AreEqual(true ,audioSource.isPlaying);
+            Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipOne.length);
+            Assert.AreEqual(false ,audioSource.isPlaying);
         }
         [UnityTest]
         public IEnumerator StartAndEndClips() {
-            yield return null;
-            Assert.Fail("");
+            audioClipPlayer.startClips.Add(TestClipOne);
+            audioClipPlayer.endClips.Add(TestClipTwo);
+            audioClipPlayer.Play();
+            Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipOne.length);
+            yield return new WaitForSeconds(TestClipTwo.length/2f);
+            Assert.AreEqual(TestClipTwo, audioClipPlayer.CurrentPlayingClip);
+            yield return new WaitForSeconds(TestClipTwo.length);
+            Assert.AreEqual(null, audioClipPlayer.CurrentPlayingClip);
+            Assert.AreEqual(false, audioSource.isPlaying);
         }
-        [UnityTest]
-        public IEnumerator PlayOnAwake() {
-            yield return null;
-            Assert.Fail("");
+        [Test]
+        public void PlayOnAwake() {
+            audioClipPlayer.playOnAwake = true;
+            audioClipPlayer.startClips.Add(TestClipOne);
+            audioClipPlayer.Awake();
+            Assert.AreEqual(true, audioSource.isPlaying);
+            Assert.AreEqual(TestClipOne, audioClipPlayer.CurrentPlayingClip);
+        }
+        [Test]
+        public void PlaySlot() {
+            Assert.Fail();
+        }
+        [Test]
+        public void PauseSlot() {
+            Assert.Fail();
+        }
+        [Test]
+        public void StopSlot() {
+            Assert.Fail();
+        }
+        [Test]
+        public void StopImmidiatelySlot() {
+            Assert.Fail();
+        }
+        [Test]
+        public void OnEndSlot() {
+            Assert.Fail();
         }
         [Test]
         public void Slots() {

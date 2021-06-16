@@ -14,36 +14,44 @@ namespace LapsRuntime {
         private AudioSource _source;
         private AudioClip _currentClip;
         private State _state = State.Stopped;
-        private bool _stopClipPlaying;
+        private bool _isPaused = false;
         private enum State {
             Stopped,
-            Starting,
             Start,
             Loop,
-            ReadyToStop,
-            Stopping,
+            StoppingReadyToPlayEnd,
+            StoppingPlayingEnd,
         }
         public AudioClip CurrentPlayingClip => _currentClip;
-        private void Awake() {
+        public void Awake() {
             _source = GetComponent<AudioSource>();
             _state = State.Stopped;
-            _stopClipPlaying = false;
+            _isPaused = false;
             if (playOnAwake) {
                 Play();
             }
         }
         public void Play() {
+            if (_isPaused) {
+                _isPaused = false;
+                _source.UnPause();
+                return;
+            }
             _state = State.Start;
             _source.Stop();
             _currentClip = PickNewClip();
-            if (_currentClip == null) _state = State.Stopped;
+            if (_currentClip == null) {
+                _state = State.Stopped;
+                return;
+            }
             _source.PlayOneShot(_currentClip);
         }
         public void Pause() {
-            
+            _isPaused = true;
+            _source.Pause();
         }
         public void Stop() {
-            _state = State.Stopping;
+            _state = State.StoppingReadyToPlayEnd;
         }
         public void StopImmidiately() {
             _currentClip = null;
@@ -52,15 +60,10 @@ namespace LapsRuntime {
         }
         private void Update() {
             if (_state != State.Stopped && !_source.isPlaying) {
-                if (_stopClipPlaying) {
-                    _state = State.Stopped;
-                    return;
-                }
                 if (_state == State.Start) _state = State.Loop;
+                if (_state == State.StoppingPlayingEnd) _state = State.Stopped;
+                if (_state == State.StoppingReadyToPlayEnd) _state = State.StoppingPlayingEnd;
                 _currentClip = PickNewClip();
-                if (_state == State.Stopping) {
-                    _stopClipPlaying = true;
-                }
                 if (_currentClip == null) {
                     _state = State.Stopped; 
                     return;
@@ -68,34 +71,16 @@ namespace LapsRuntime {
                 _source.PlayOneShot(_currentClip);
             }
         }
-        
         public AudioClip PickNewClip() {
-            switch (_state) {
-                case State.Starting:
-                    _state = State.Start;
-                    break;
-                case State.Start:
-                    
-                    break;
-                case State.Loop:
-                    break;
-                case State.ReadyToStop:
-                    break;
-                case State.Stopping:
-                    break;
-                case State.Stopped:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
             if (_state == State.Start && startClips.Count <= 0) _state = State.Loop;
-            if (_state == State.Loop && loopClips.Count <= 0) _state = State.Stopping;
+            if (_state == State.Loop && loopClips.Count <= 0) _state = State.StoppingPlayingEnd;
+            if (_state == State.StoppingPlayingEnd && endClips.Count <= 0) _state = State.Stopped;
             switch (_state) {
                 case State.Start:
                     return LapsMath.PickRandomFromList(startClips);
                 case State.Loop:
                     return LapsMath.PickRandomFromList(loopClips);
-                case State.Stopping:
+                case State.StoppingPlayingEnd:
                     return LapsMath.PickRandomFromList(endClips);
                 default: return null;
             }
