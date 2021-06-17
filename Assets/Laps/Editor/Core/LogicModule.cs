@@ -208,6 +208,7 @@ namespace LapsEditor {
         }
         public void OnRepaint() {
             using (Scopes.HandlesGUI()) {
+                PopulateSlotInformationCacheDictionary();
                 DrawAllSlots();
                 DrawAllConnections();
                 DrawDraggingAndHoverConnection();
@@ -215,7 +216,7 @@ namespace LapsEditor {
             }
             SceneView.RepaintAll();
         }
-        private void DrawAllSlots() {
+        private void PopulateSlotInformationCacheDictionary(){
             _slotInformationCacheDictionary.Clear();
             foreach (var lapsComponent in _editor.allComponents) {
                 if (lapsComponent is CompoundComponent compound) {
@@ -261,6 +262,11 @@ namespace LapsEditor {
                         DrawSlot(slotInformation);
                     }
                 }
+            }
+        }
+        private void DrawAllSlots() {
+            foreach (var slotInformation in _slotInformationCacheDictionary.Values) {
+                DrawSlot(slotInformation);
             }
         }
         private void DrawSlot(SlotInformation slotInformation) {
@@ -394,27 +400,12 @@ namespace LapsEditor {
         }
         private float GetNearestDistanceFromPointToAnySlot(Vector2 point) {
             var nearestDistance = float.MaxValue;
-            foreach (var lapsComponent in _editor.allComponents) {
-                if (!EditorCoreCommons.ShoudDrawNormal(lapsComponent)) continue;
-                _slots.Clear();
-                lapsComponent.GetInputSlots(_slots);
-                for (int i = 0; i < _slots.Count; i++) {
-                    var slotInformation = new SlotInformation(lapsComponent, true, _slots[i], i);
-                    var rect = GetSlotRect(slotInformation);
-                    var distance = LapsMath.DistanceFromPointToRect(rect, point);
-                    if (distance < nearestDistance) {
-                        nearestDistance = distance;
-                    }
-                }
-                _slots.Clear();
-                lapsComponent.GetOutputSlots(_slots);
-                for (int i = 0; i < _slots.Count; i++) {
-                    var slotInformation = new SlotInformation(lapsComponent, false, _slots[i], i);
-                    var rect = GetSlotRect(slotInformation);
-                    var distance = LapsMath.DistanceFromPointToRect(rect, point);
-                    if (distance < nearestDistance) {
-                        nearestDistance = distance;
-                    }
+            PopulateSlotInformationCacheDictionary();
+            foreach (var slotInformation in _slotInformationCacheDictionary.Values) {
+                var rect = GetSlotRect(slotInformation);
+                var distance = LapsMath.DistanceFromPointToRect(rect, point);
+                if (distance < nearestDistance) {
+                    nearestDistance = distance;
                 }
             }
             return nearestDistance;
