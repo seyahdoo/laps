@@ -82,7 +82,7 @@ namespace LapsEditor {
                 lapsComponent.OutputFired += OutputFired;
             }
         }
-        private void OutputFired(LapsComponent lapsComponent, int slotId, object _) {
+        private void OutputFired(LapsComponent lapsComponent, int slotId, object _1, LapsComponent _0) {
             var key = new OutputFireTimingKey() {
                 lapsComponent = lapsComponent,
                 slotId = slotId,

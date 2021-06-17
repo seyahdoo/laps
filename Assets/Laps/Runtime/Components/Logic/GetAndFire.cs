@@ -4,7 +4,7 @@ namespace LapsRuntime {
     public class GetAndFire : LapsComponent {
         public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
             switch (slotId) {
-                case 0: FireOutput(1, FireOutput(0)); return null;
+                case 0:  FireOutput(1, FireOutput(0)); return null;
                 default: return null;
             }
         }

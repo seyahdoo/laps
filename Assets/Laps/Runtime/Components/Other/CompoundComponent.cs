@@ -6,18 +6,31 @@ using UnityEngine;
 namespace LapsRuntime {
     [LapsAddMenuOptions("Other/Compound")]
     public class CompoundComponent : LapsComponent {
-        public List<SlotInformation> inputSlots;
-        public List<SlotInformation> outputSlots;
+        public List<SlotInformation> inputSlots = new List<SlotInformation>();
+        public List<SlotInformation> outputSlots = new List<SlotInformation>();
 
         public override void GetInputSlots(SlotList slots) {
             foreach (var slotInformation in inputSlots) {
-                slots.Add(slotInformation.LogicSlot);
+                if (slotInformation.id <= 0) continue;
+                slots.Add(slotInformation.ExternalLogicSlot);
+            }
+            foreach (var slotInformation in outputSlots) {
+                if (slotInformation.id <= 0) continue;
+                slots.Add(slotInformation.InternalLogicSlot);
             }
         }
         public override void GetOutputSlots(SlotList slots) {
             foreach (var slotInformation in outputSlots) {
-                slots.Add(slotInformation.LogicSlot);
+                if (slotInformation.id == 0) continue;
+                slots.Add(slotInformation.ExternalLogicSlot);
             }
+            foreach (var slotInformation in inputSlots) {
+                if (slotInformation.id <= 0) continue;
+                slots.Add(slotInformation.InternalLogicSlot);
+            }
+        }
+        public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
+            return FireOutput(-slotId, parameter, eventSource);
         }
         [Serializable]
         public class SlotInformation {
@@ -27,7 +40,9 @@ namespace LapsRuntime {
             public TypeEnum returnType;
             public Type ParameterType => TypeEnumToType(parameterType);
             public Type ReturnType => TypeEnumToType(returnType);
-            public LogicSlot LogicSlot => new LogicSlot(name, id, ParameterType, ReturnType);
+            public LogicSlot ExternalLogicSlot => new LogicSlot(name, id, ParameterType, ReturnType);
+            public LogicSlot InternalLogicSlot => new LogicSlot(name, -id, ParameterType, ReturnType);
+
         }
         public enum TypeEnum {
             Null,
