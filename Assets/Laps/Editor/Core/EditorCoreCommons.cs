@@ -14,9 +14,6 @@ namespace LapsEditor {
                 }
             }
             else {
-                // if (lapsComponent.transform.parent == activeTransform) {
-                //     return true;
-                // }
                 if (lapsComponent.transform.parent == activeTransform.parent) {
                     return true;
                 }
@@ -25,21 +22,9 @@ namespace LapsEditor {
         }
         public static bool ShoudDrawCompoundInside(CompoundComponent compoundComponent) {
             var activeTransform = Selection.activeTransform;
-            if (activeTransform == null) {
-                if (compoundComponent.transform.parent == null) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            }
-            else {
-                // if (lapsComponent.transform.parent == activeTransform) {
-                //     return true;
-                // }
-                if (compoundComponent.transform.parent == activeTransform.parent) {
-                    return true;
-                }
+            if (activeTransform == null) return false;
+            if (compoundComponent.transform == activeTransform.parent) {
+                return true;
             }
             return false;
         }

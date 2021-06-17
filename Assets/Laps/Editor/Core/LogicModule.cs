@@ -218,20 +218,48 @@ namespace LapsEditor {
         private void DrawAllSlots() {
             _slotInformationCacheDictionary.Clear();
             foreach (var lapsComponent in _editor.allComponents) {
-                if (!EditorCoreCommons.ShoudDrawNormal(lapsComponent)) continue;
-                _slots.Clear();
-                lapsComponent.GetInputSlots(_slots);
-                for (int i = 0; i < _slots.Count; i++) {
-                    var slotInformation = new SlotInformation(lapsComponent, true, _slots[i], i);
-                    _slotInformationCacheDictionary.Add(new SlotInformationCacheKey(lapsComponent, true, _slots[i].id), slotInformation);
-                    DrawSlot(slotInformation);
+                if (lapsComponent is CompoundComponent compound) {
+                    var outside = EditorCoreCommons.ShoudDrawNormal(lapsComponent);
+                    var inside = EditorCoreCommons.ShoudDrawCompoundInside(compound);
+                    _slots.Clear();
+                    lapsComponent.GetInputSlots(_slots);
+                    for (int i = 0; i < _slots.Count; i++) {
+                        var slot = _slots[i];
+                        if ((inside && slot.id < 0) || (outside && slot.id > 0)) {
+                            var slotInformation = new SlotInformation(lapsComponent, true, slot, i);
+                            _slotInformationCacheDictionary.Add(new SlotInformationCacheKey(lapsComponent, true, slot.id), slotInformation);
+                            DrawSlot(slotInformation);
+                        }
+                    }
+                    _slots.Clear();
+                    lapsComponent.GetOutputSlots(_slots);
+                    for (int i = 0; i < _slots.Count; i++) {
+                        var slot = _slots[i];
+                        if ((inside && slot.id < 0) || (outside && slot.id > 0)) {
+                            var slotInformation = new SlotInformation(lapsComponent, false, slot, i);
+                            _slotInformationCacheDictionary.Add(new SlotInformationCacheKey(lapsComponent, false, slot.id), slotInformation);
+                            DrawSlot(slotInformation);
+                        }
+                    }
                 }
-                _slots.Clear();
-                lapsComponent.GetOutputSlots(_slots);
-                for (int i = 0; i < _slots.Count; i++) {
-                    var slotInformation = new SlotInformation(lapsComponent, false, _slots[i], i);
-                    _slotInformationCacheDictionary.Add(new SlotInformationCacheKey(lapsComponent, false, _slots[i].id), slotInformation);
-                    DrawSlot(slotInformation);
+                else {
+                    if (!EditorCoreCommons.ShoudDrawNormal(lapsComponent)) continue;
+                    _slots.Clear();
+                    lapsComponent.GetInputSlots(_slots);
+                    for (int i = 0; i < _slots.Count; i++) {
+                        var slot = _slots[i];
+                        var slotInformation = new SlotInformation(lapsComponent, true, slot, i);
+                        _slotInformationCacheDictionary.Add(new SlotInformationCacheKey(lapsComponent, true, slot.id), slotInformation);
+                        DrawSlot(slotInformation);
+                    }
+                    _slots.Clear();
+                    lapsComponent.GetOutputSlots(_slots);
+                    for (int i = 0; i < _slots.Count; i++) {
+                        var slot = _slots[i];
+                        var slotInformation = new SlotInformation(lapsComponent, false, slot, i);
+                        _slotInformationCacheDictionary.Add(new SlotInformationCacheKey(lapsComponent, false, slot.id), slotInformation);
+                        DrawSlot(slotInformation);
+                    }
                 }
             }
         }
