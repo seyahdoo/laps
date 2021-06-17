@@ -400,13 +400,14 @@ namespace LapsEditor {
                 var name = slotInformation.LogicSlot.name;
                 var style = new GUIStyle(GUIStyle.none);
                 style.padding = new RectOffset(4, 4, 1, 1);
+                style.normal.textColor = Color.white;
                 var size = style.CalcSize(new GUIContent(name));
                 if (slotInformation.isTarget) {
                     screenPos.x -= size.x;
                 }
                 screenPos.y -= size.y / 2f;
                 var rect = new Rect(screenPos, size);
-                EditorGUI.DrawRect(rect, Color.gray);
+                EditorGUI.DrawRect(rect, new Color(0.219607843137255f,.219607843137255f,.219607843137255f,1f));
                 GUI.Label(rect, slotInformation.LogicSlot.name, style);
             }
         }
