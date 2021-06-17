@@ -218,6 +218,7 @@ namespace LapsEditor {
         private void DrawAllSlots() {
             _slotInformationCacheDictionary.Clear();
             foreach (var lapsComponent in _editor.allComponents) {
+                if (!EditorCoreCommons.ShoudDrawNormal(lapsComponent)) continue;
                 _slots.Clear();
                 lapsComponent.GetInputSlots(_slots);
                 for (int i = 0; i < _slots.Count; i++) {
@@ -366,6 +367,7 @@ namespace LapsEditor {
         private float GetNearestDistanceFromPointToAnySlot(Vector2 point) {
             var nearestDistance = float.MaxValue;
             foreach (var lapsComponent in _editor.allComponents) {
+                if (!EditorCoreCommons.ShoudDrawNormal(lapsComponent)) continue;
                 _slots.Clear();
                 lapsComponent.GetInputSlots(_slots);
                 for (int i = 0; i < _slots.Count; i++) {

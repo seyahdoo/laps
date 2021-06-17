@@ -470,6 +470,9 @@ MonoBehaviour:
   timeToReachApex: 0.3
   jumpPressing: 0
   input: {x: 0, y: 0}
+  _jumping: 0
+  _grounded: 0
+  _jumpStartTime: 0
 --- !u!50 &1853440058
 Rigidbody2D:
   serializedVersion: 4
