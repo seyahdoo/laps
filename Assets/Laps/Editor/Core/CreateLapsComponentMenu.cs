@@ -22,11 +22,14 @@ public class CreateLapsComponentMenu : Editor {
             menu.ShowAsContext();
         }
     }
-    private static void CreateLapsComponent(object obj) {
-        var template = (Template) obj;
+    private static void CreateLapsComponent(object templateObject) {
+        var template = (Template) templateObject;
         var go = new GameObject(template.type.Name);
-        go.AddComponent(template.type);
+        if (Selection.activeTransform != null) {
+            go.transform.SetParent(Selection.activeTransform.parent);
+        }
         go.transform.position = spawnPosition;
+        go.AddComponent(template.type);
     }
     private static Vector3 GetObjectCreationPosition() {
         Vector3 mousePosition = Event.current.mousePosition;
