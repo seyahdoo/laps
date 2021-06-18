@@ -10,7 +10,6 @@ namespace LapsEditModeTests {
             var go = new GameObject();
             go.AddComponent<Rigidbody2D>();
             comp2D = go.AddComponent<LapsRigidbody2D>();
-            comp2D.Awake();
         }
         [Test]
         public void LapsRigidbodyReturnsTheRigidbodyOfTheObject() {
