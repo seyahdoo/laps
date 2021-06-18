@@ -4,16 +4,10 @@ namespace LapsRuntime  {
     [LapsAddMenuOptions("Physics/Laps Rigidbody")]
     [RequireComponent(typeof(Rigidbody))]
     public class LapsRigidbody : LapsComponent {
-        private Rigidbody _body;
-        private Transform _transform;
-        public void Awake() {
-            _body = GetComponent<Rigidbody>();
-            _transform = transform;
-        }
         public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
             switch (slotId) {
-                case 0:  return _body;
-                case 1:  return _transform;
+                case 0:  return GetComponent<Rigidbody>();
+                case 1:  return transform;
                 default: return null;
             }
         }
