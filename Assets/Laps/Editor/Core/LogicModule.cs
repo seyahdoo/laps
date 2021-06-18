@@ -13,6 +13,7 @@ namespace LapsEditor {
         private static readonly Color ConnectableConnectionColor = Color.white;
         private static readonly Color ConnectionJustFiredColor = Color.green;
         private static readonly Color NonConnectableConnectionColor = Color.red;
+        private static readonly Color DeletedConnectionColor = Color.yellow;
         private static readonly Color DanglingConnectionColor = Color.white;
         private static readonly Color ConnectionBackgroundColor = Color.black;
         private static readonly Color ConnectionJustFiredBackgroundColor = Color.green;
@@ -152,26 +153,33 @@ namespace LapsEditor {
         public static void Connect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             if (!CanConnect(sourceComponent, sourceSlotId, targetComponent, targetSlotId)) return;
             if (ConnectionExists(sourceComponent, sourceSlotId, targetComponent, targetSlotId)) return;
-            sourceComponent.connections.Add(new Connection(sourceSlotId, targetComponent, targetSlotId));
             Undo.RegisterCompleteObjectUndo(sourceComponent, "connection connected");
+            sourceComponent.connections.Add(new Connection(sourceSlotId, targetComponent, targetSlotId));
         }
         public static void Disconnect(LapsComponent sourceComponent, int sourceSlotId, LapsComponent targetComponent, int targetSlotId) {
             for (int i = 0; i < sourceComponent.connections.Count; i++) {
                 var connection = sourceComponent.connections[i];
                 if (connection.sourceSlotId == sourceSlotId && connection.targetSlotId == targetSlotId && connection.targetComponent == targetComponent) {
-                    sourceComponent.connections.RemoveAt(i);
                     Undo.RegisterCompleteObjectUndo(sourceComponent, "connection removed");
+                    sourceComponent.connections.RemoveAt(i);
                     return;
                 }
             }
         }
         private void RemoveConnectionOfSlot(SlotInformation slotInformation) {
+            if (TryGetConnectionOfSlot(slotInformation, out var component, out var i)) {
+                Undo.RegisterCompleteObjectUndo(component, "connection removed");
+                component.connections.RemoveAt(i);
+            }
+        }
+        private bool TryGetConnectionOfSlot(SlotInformation slotInformation, out LapsComponent component ,out int index) {
             if (!slotInformation.isTarget) {
                 var connections = slotInformation.lapsComponent.connections;
                 for (var i = 0; i < connections.Count; i++) {
                     if (connections[i].sourceSlotId == slotInformation.LogicSlot.id) {
-                        connections.RemoveAt(i);
-                        return;
+                        component = slotInformation.lapsComponent;
+                        index = i;
+                        return true;
                     }
                 }
             }
@@ -179,13 +187,17 @@ namespace LapsEditor {
                 foreach (var lapsComponent in _editor.allComponents) {
                     for (int i = 0; i < lapsComponent.connections.Count; i++) {
                         var connection = lapsComponent.connections[i];
-                        if (connection.targetComponent == slotInformation.lapsComponent && connection.targetSlotId == slotInformation.LogicSlot.id){
-                            lapsComponent.connections.RemoveAt(i);
-                            return;
+                        if (connection.targetComponent == slotInformation.lapsComponent && connection.targetSlotId == slotInformation.LogicSlot.id) {
+                            component = lapsComponent;
+                            index = i;
+                            return true;
                         }
                     }
                 }
             }
+            component = default;
+            index = default;
+            return false;
         }
         private bool CanConnect(SlotInformation slot1, SlotInformation slot2) {
             if (slot1.isTarget == slot2.isTarget) return false;
@@ -343,19 +355,18 @@ namespace LapsEditor {
             }
         }
         private void DrawDanglingConnection(LapsComponent lapsComponent, bool sourceSlotExists, SlotInformation sourceSlot, bool targetSlotExists, SlotInformation targetSlot) {
+            DrawDanglingConnection(lapsComponent, sourceSlotExists, sourceSlot, targetSlotExists, targetSlot,NonConnectableConnectionColor, ConnectionBackgroundColor);
+        }
+        private void DrawDanglingConnection(LapsComponent lapsComponent, bool sourceSlotExists, SlotInformation sourceSlot, bool targetSlotExists, SlotInformation targetSlot, Color color, Color backgroundColor) {
             if (!sourceSlotExists && !targetSlotExists) {
                 var sourcePosition = HandleUtility.WorldToGUIPoint(lapsComponent.transform.position);
                 var targetPosition = sourcePosition + Vector2.down * 40f;
-                var color = NonConnectableConnectionColor;
-                var backgroundColor = ConnectionBackgroundColor;
                 DrawConnection(sourcePosition, targetPosition, color, backgroundColor);
                 return;
             }
             if (sourceSlotExists) {
                 var sourcePosition = GetScreenPositionOfSlot(sourceSlot);
                 var targetPosition = sourcePosition + Vector2.right * 40f;
-                var color = NonConnectableConnectionColor;
-                var backgroundColor = ConnectionBackgroundColor;
                 DrawConnection(sourcePosition, targetPosition, color, backgroundColor);
                 return;
             }
@@ -363,19 +374,46 @@ namespace LapsEditor {
             if (targetSlotExists) {
                 var targetPosition = GetScreenPositionOfSlot(targetSlot);
                 var sourcePosition = targetPosition + Vector2.left * 40f;
-                var color = NonConnectableConnectionColor;
-                var backgroundColor = ConnectionBackgroundColor;
                 DrawConnection(sourcePosition, targetPosition, color, backgroundColor);
                 return;
             }
         }
+        private void DrawConnection(LapsComponent component, int index, Color color) {
+            var connection = component.connections[index];
+            SlotInformation sourceSlotInformation = default;
+            SlotInformation targetSlotInformation = default;
+            _slots.Clear();
+            component.GetOutputSlots(_slots);
+            for (int i = 0; i < _slots.Count; i++) {
+                if (_slots[i].id == connection.sourceSlotId) {
+                    sourceSlotInformation = new SlotInformation(component, false, _slots[i], i);
+                    break;
+                }
+            }
+            if (connection.targetComponent == null) {
+                DrawDanglingConnection(component, true, sourceSlotInformation, false, default, DeletedConnectionColor, DeletedConnectionColor);
+                return;
+            }
+            _slots.Clear();
+            connection.targetComponent.GetOutputSlots(_slots);
+            for (int i = 0; i < _slots.Count; i++) {
+                if (_slots[i].id == connection.targetSlotId) {
+                    targetSlotInformation = new SlotInformation(connection.targetComponent, true, _slots[i], i);
+                    break;
+                }
+            }
+            DrawConnection(sourceSlotInformation, targetSlotInformation, color, color);
+        }
         private void DrawConnection(SlotInformation slot1, SlotInformation slot2) {
             var targetSlot = slot1.isTarget ? slot1 : slot2;
             var sourceSlot = slot1.isTarget ? slot2 : slot1;
-            var sourcePosition = GetScreenPositionOfSlot(sourceSlot);
-            var targetPosition = GetScreenPositionOfSlot(targetSlot);
             var color = GetConnectionColor(sourceSlot, targetSlot);
             var backgroundColor = GetConnectionBackgroundColor(sourceSlot);
+            DrawConnection(sourceSlot, targetSlot, color, backgroundColor);
+        }
+        private void DrawConnection(SlotInformation sourceSlot, SlotInformation targetSlot, Color color, Color backgroundColor) {
+            var sourcePosition = GetScreenPositionOfSlot(sourceSlot);
+            var targetPosition = GetScreenPositionOfSlot(targetSlot);
             DrawConnection(sourcePosition, targetPosition, color, backgroundColor);
         }
         private void DrawConnection(Vector2 sourcePosition, Vector2 targetPosition, Color color, Color backgroundColor) {
@@ -436,7 +474,9 @@ namespace LapsEditor {
                     DrawConnection(_draggingSlot, hoveredSlot);
                 }
                 else {
-                    //todo draw would be deleted connection in red 
+                    if (TryGetConnectionOfSlot(_draggingSlot, out var component, out var i)) {
+                        DrawConnection(component, i, DeletedConnectionColor);
+                    }
                 }
             }
             else {
