@@ -97,12 +97,12 @@ namespace LapsEditor {
             if (!_dragged) {
                 if (Event.current.shift || Event.current.control) {
                     if (Selection.Contains(lapsComponent.gameObject)) {
-                        var list = Selection.gameObjects.ToList();
+                        var list = Selection.objects.ToList();
                         list.Remove(lapsComponent.gameObject);
                         Selection.objects = list.ToArray();
                     }
                     else {
-                        var list = Selection.gameObjects.ToList();
+                        var list = Selection.objects.ToList();
                         list.Add(lapsComponent.gameObject);
                         Selection.objects = list.ToArray();
                     }
