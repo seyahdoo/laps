@@ -298,14 +298,46 @@ namespace LapsEditor {
         }
         private void DrawAllConnections() {
             foreach (var lapsComponent in _editor.allComponents) {
-                foreach (var connection in lapsComponent.connections) {
-                    var sourceSlotExists = TryGetDrawInformation(lapsComponent, false, connection.sourceSlotId, out var sourceDrawInformation);
-                    var targetSlotExists = TryGetDrawInformation(connection.targetComponent, true, connection.targetSlotId, out var targetDrawInformation);
-                    if (!sourceSlotExists || !targetSlotExists) {
-                        DrawDanglingConnection(lapsComponent, sourceSlotExists, sourceDrawInformation, targetSlotExists, targetDrawInformation);
+                if (lapsComponent is CompoundComponent compound) {
+                    if (EditorCoreCommons.ShoudDrawNormal(lapsComponent)) {
+                        foreach (var connection in lapsComponent.connections) {
+                            if (connection.sourceSlotId <= 0) continue;
+                            var sourceSlotExists = TryGetDrawInformation(lapsComponent, false, connection.sourceSlotId, out var sourceDrawInformation);
+                            var targetSlotExists = TryGetDrawInformation(connection.targetComponent, true, connection.targetSlotId, out var targetDrawInformation);
+                            if (!sourceSlotExists || !targetSlotExists) {
+                                DrawDanglingConnection(lapsComponent, sourceSlotExists, sourceDrawInformation, targetSlotExists, targetDrawInformation);
+                            }
+                            else {
+                                DrawConnection(sourceDrawInformation, targetDrawInformation);
+                            }
+                        }
+                        continue;
                     }
-                    else {
-                        DrawConnection(sourceDrawInformation, targetDrawInformation);
+                    if (EditorCoreCommons.ShoudDrawCompoundInside(compound)) {
+                        foreach (var connection in lapsComponent.connections) {
+                            if (connection.sourceSlotId >= 0) continue;
+                            var sourceSlotExists = TryGetDrawInformation(lapsComponent, false, connection.sourceSlotId, out var sourceDrawInformation);
+                            var targetSlotExists = TryGetDrawInformation(connection.targetComponent, true, connection.targetSlotId, out var targetDrawInformation);
+                            if (!sourceSlotExists || !targetSlotExists) {
+                                DrawDanglingConnection(lapsComponent, sourceSlotExists, sourceDrawInformation, targetSlotExists, targetDrawInformation);
+                            }
+                            else {
+                                DrawConnection(sourceDrawInformation, targetDrawInformation);
+                            }
+                        }
+                    }
+                }
+                else {
+                    if (!EditorCoreCommons.ShoudDrawNormal(lapsComponent)) continue;
+                    foreach (var connection in lapsComponent.connections) {
+                        var sourceSlotExists = TryGetDrawInformation(lapsComponent, false, connection.sourceSlotId, out var sourceDrawInformation);
+                        var targetSlotExists = TryGetDrawInformation(connection.targetComponent, true, connection.targetSlotId, out var targetDrawInformation);
+                        if (!sourceSlotExists || !targetSlotExists) {
+                            DrawDanglingConnection(lapsComponent, sourceSlotExists, sourceDrawInformation, targetSlotExists, targetDrawInformation);
+                        }
+                        else {
+                            DrawConnection(sourceDrawInformation, targetDrawInformation);
+                        }
                     }
                 }
             }
