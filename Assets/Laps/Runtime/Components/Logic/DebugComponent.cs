@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace LapsRuntime {
-    [LapsAddMenuOptions("Logic/Debug")]
+    [LapsAddMenuOptions("Other/Debug")]
     public class DebugComponent : LapsComponent {
         public string label;
         public void FireDebugEvent() {
