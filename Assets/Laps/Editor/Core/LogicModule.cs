@@ -299,22 +299,27 @@ namespace LapsEditor {
         private void DrawAllConnections() {
             foreach (var lapsComponent in _editor.allComponents) {
                 foreach (var connection in lapsComponent.connections) {
-                    if (!TryGetDrawInformation(lapsComponent, false, connection.sourceSlotId, out var sourceDrawInformation)) continue;
-                    if (!TryGetDrawInformation(connection.targetComponent, true, connection.targetSlotId, out var targetDrawInformation)) continue;
-                    var sourcePosition = GetScreenPositionOfSlot(sourceDrawInformation);
-                    var destinationPosition = GetScreenPositionOfSlot(targetDrawInformation);
-                    var color = GetConnectionColor(sourceDrawInformation, targetDrawInformation);
-                    var backgroundColor = GetConnectionBackgroundColor(sourceDrawInformation);
-                    DrawConnection(sourcePosition, destinationPosition, color, backgroundColor);
+                    var sourceSlotExists = TryGetDrawInformation(lapsComponent, false, connection.sourceSlotId, out var sourceDrawInformation);
+                    var targetSlotExists = TryGetDrawInformation(connection.targetComponent, true, connection.targetSlotId, out var targetDrawInformation);
+                    if (!sourceSlotExists || !targetSlotExists) {
+                        DrawDanglingConnection(lapsComponent, sourceSlotExists, sourceDrawInformation, targetSlotExists, targetDrawInformation);
+                    }
+                    else {
+                        DrawConnection(sourceDrawInformation, targetDrawInformation);
+                    }
                 }
             }
+        }
+        private void DrawDanglingConnection(LapsComponent lapsComponent, bool sourceSlotExists, SlotInformation sourceDrawInformation, bool targetSlotExists, SlotInformation targetDrawInformation) {
         }
         private void DrawConnection(SlotInformation slot1, SlotInformation slot2) {
             var targetSlot = slot1.isTarget ? slot1 : slot2;
             var sourceSlot = slot1.isTarget ? slot2 : slot1;
+            var sourcePosition = GetScreenPositionOfSlot(sourceSlot);
+            var targetPosition = GetScreenPositionOfSlot(targetSlot);
             var color = GetConnectionColor(sourceSlot, targetSlot);
             var backgroundColor = GetConnectionBackgroundColor(sourceSlot);
-            DrawConnection(GetScreenPositionOfSlot(sourceSlot),GetScreenPositionOfSlot(targetSlot), color, backgroundColor);
+            DrawConnection(sourcePosition,targetPosition, color, backgroundColor);
         }
         private void DrawConnection(Vector2 sourcePosition, Vector2 targetPosition, Color color, Color backgroundColor) {
             var sourceDrawPosition = sourcePosition + Vector2.right * (SlotRadius * .9f);
