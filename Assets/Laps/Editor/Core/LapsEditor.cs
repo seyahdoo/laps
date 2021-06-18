@@ -1,6 +1,6 @@
 using LapsRuntime;
 using UnityEditor;
-using Object = UnityEngine.Object;
+using UnityEditor.SceneManagement;
 
 namespace LapsEditor {
     public class LapsEditor {
@@ -33,7 +33,7 @@ namespace LapsEditor {
         }
         private void FindAllLapsComponents() {
             //todo optimize this
-            allComponents = Object.FindObjectsOfType<LapsComponent>(false);
+            allComponents = StageUtility.GetCurrentStageHandle().FindComponentsOfType<LapsComponent>();
         }
     }
 }
