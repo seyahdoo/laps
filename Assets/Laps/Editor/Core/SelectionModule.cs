@@ -20,6 +20,11 @@ namespace LapsEditor {
                 if (EditorCoreCommons.ShoudDrawNormal(lapsComponent)) {
                     DrawLapsIcon(lapsComponent);
                 }
+                if (lapsComponent is CompoundComponent compound) {
+                    if (EditorCoreCommons.ShoudDrawCompoundInside(compound)) {
+                        DrawLapsIcon(compound);
+                    }
+                }
             }
         }
         private void DrawLapsIcon(LapsComponent lapsComponent) {
@@ -57,6 +62,11 @@ namespace LapsEditor {
         }
         private Texture GetIconTexture(LapsComponent lapsComponent) {
             //todo cache this
+            if (lapsComponent is CompoundComponent compound) {
+                if (EditorCoreCommons.ShoudDrawCompoundInside(compound)) {
+                    return Resources.Load<Texture>($"LapsIcons/compoundinside");
+                }
+            }
             var texture = Resources.Load<Texture>($"LapsIcons/{lapsComponent.GetType().Name.ToLower()}");
             if (texture == null) {
                 texture = Resources.Load<Texture>($"LapsIcons/lapscomponent");

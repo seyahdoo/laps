@@ -62,6 +62,9 @@ namespace LapsEditor {
         }
         private static void OnRepaint(LapsComponent lapsComponent, bool isHotControl, bool isNearestControl, Texture iconTexture, Rect rect) {
             var color = GetHandleColorForLapsComponent(lapsComponent, isHotControl, isNearestControl);
+            DrawIcon(iconTexture, rect, color);
+        }
+        private static void DrawIcon(Texture iconTexture, Rect rect, Color color) {
             GUI.DrawTexture(
                 rect,
                 iconTexture,
