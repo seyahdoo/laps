@@ -1,3 +1,4 @@
+using System.Linq;
 using LapsRuntime;
 using UnityEditor;
 using UnityEngine;
@@ -20,23 +21,23 @@ namespace LapsEditor {
                case EventType.MouseDown:
                    if (Event.current.button == 0 && HandleUtility.nearestControl == id) {
                        GUIUtility.hotControl = id;
+                       OnMouseDown(lapsComponent);
                        Event.current.Use();
                        EditorGUIUtility.SetWantsMouseJumping(1);
-                       OnMouseDown(lapsComponent);
                    }
                    break;
                case EventType.MouseUp:
                    if (id == GUIUtility.hotControl) {
                        GUIUtility.hotControl = 0;
+                       OnMouseUp(lapsComponent);
                        Event.current.Use();
                        EditorGUIUtility.SetWantsMouseJumping(0);
-                       OnMouseUp(lapsComponent);
                    }
                    break;
                case EventType.MouseDrag:
                    if (id == GUIUtility.hotControl) {
-                       Event.current.Use();
                        OnMouseDrag(lapsComponent);
+                       Event.current.Use();
                    }
                    break;
                case EventType.Repaint:
@@ -94,7 +95,21 @@ namespace LapsEditor {
         }
         private static void OnMouseUp(LapsComponent lapsComponent) {
             if (!_dragged) {
-                Selection.activeGameObject = lapsComponent.gameObject;
+                if (Event.current.shift || Event.current.control) {
+                    if (Selection.Contains(lapsComponent.gameObject)) {
+                        var list = Selection.gameObjects.ToList();
+                        list.Remove(lapsComponent.gameObject);
+                        Selection.objects = list.ToArray();
+                    }
+                    else {
+                        var list = Selection.gameObjects.ToList();
+                        list.Add(lapsComponent.gameObject);
+                        Selection.objects = list.ToArray();
+                    }
+                }
+                else {
+                    Selection.activeGameObject = lapsComponent.gameObject;
+                }
             }
         }
         private static void OnMouseDown(LapsComponent lapsComponent) {
