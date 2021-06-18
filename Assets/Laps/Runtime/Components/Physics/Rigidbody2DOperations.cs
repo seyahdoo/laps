@@ -6,9 +6,7 @@ namespace LapsRuntime {
         private Rigidbody2D _currentBody;
         public object CurrentBody => _currentBody;
         public void Awake() {
-            if (FireOutput(0) is Rigidbody2D body) {
-                _currentBody = body;
-            }
+            _currentBody = FireOutput(0) as Rigidbody2D;
         }
         public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
             switch (slotId) {
