@@ -310,7 +310,32 @@ namespace LapsEditor {
                 }
             }
         }
-        private void DrawDanglingConnection(LapsComponent lapsComponent, bool sourceSlotExists, SlotInformation sourceDrawInformation, bool targetSlotExists, SlotInformation targetDrawInformation) {
+        private void DrawDanglingConnection(LapsComponent lapsComponent, bool sourceSlotExists, SlotInformation sourceSlot, bool targetSlotExists, SlotInformation targetSlot) {
+            if (!sourceSlotExists && !targetSlotExists) {
+                var sourcePosition = HandleUtility.WorldToGUIPoint(lapsComponent.transform.position);
+                var targetPosition = sourcePosition + Vector2.down * 40f;
+                var color = NonConnectableConnectionColor;
+                var backgroundColor = ConnectionBackgroundColor;
+                DrawConnection(sourcePosition, targetPosition, color, backgroundColor);
+                return;
+            }
+            if (sourceSlotExists) {
+                var sourcePosition = GetScreenPositionOfSlot(sourceSlot);
+                var targetPosition = sourcePosition + Vector2.right * 40f;
+                var color = NonConnectableConnectionColor;
+                var backgroundColor = ConnectionBackgroundColor;
+                DrawConnection(sourcePosition, targetPosition, color, backgroundColor);
+                return;
+            }
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (targetSlotExists) {
+                var targetPosition = GetScreenPositionOfSlot(targetSlot);
+                var sourcePosition = targetPosition + Vector2.left * 40f;
+                var color = NonConnectableConnectionColor;
+                var backgroundColor = ConnectionBackgroundColor;
+                DrawConnection(sourcePosition, targetPosition, color, backgroundColor);
+                return;
+            }
         }
         private void DrawConnection(SlotInformation slot1, SlotInformation slot2) {
             var targetSlot = slot1.isTarget ? slot1 : slot2;
@@ -319,7 +344,7 @@ namespace LapsEditor {
             var targetPosition = GetScreenPositionOfSlot(targetSlot);
             var color = GetConnectionColor(sourceSlot, targetSlot);
             var backgroundColor = GetConnectionBackgroundColor(sourceSlot);
-            DrawConnection(sourcePosition,targetPosition, color, backgroundColor);
+            DrawConnection(sourcePosition, targetPosition, color, backgroundColor);
         }
         private void DrawConnection(Vector2 sourcePosition, Vector2 targetPosition, Color color, Color backgroundColor) {
             var sourceDrawPosition = sourcePosition + Vector2.right * (SlotRadius * .9f);
