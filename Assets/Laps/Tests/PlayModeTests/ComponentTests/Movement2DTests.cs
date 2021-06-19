@@ -125,7 +125,7 @@ namespace LapsPlayModeTests {
         public void SetBodySlot() {
             movement.body = null;
             movement.HandleInput(0, body, null);
-            Assert.AreEqual(body, movement.body);
+            Assert.AreEqual(body, movement.Body);
         }
         [UnityTest]
         public IEnumerator GoForwardsSlot() {
@@ -235,6 +235,43 @@ namespace LapsPlayModeTests {
             movement.GoBackwards();
             yield return new WaitForSeconds(1f);
             Assert.AreEqual(1, test.inputCallCount);
+        }
+        [UnityTest]
+        public IEnumerator MovementWorkOnItsLocalSpacePosition() {
+            movement.transform.position = new Vector3(2, 1, 0);
+            var speed = 1f;
+            movement.SetSpeed(speed);
+            movement.TeleportBackwardEnd();
+            Assert.IsTrue(LapsMath.ApproximatelyClose((Vector2)movement.transform.TransformPoint(Vector3.zero), body.position));
+            movement.GoForwards();
+            var startFixedTime = Time.fixedTime;
+            yield return new WaitForSeconds(1.5f);
+            var elapsedFixedTime = Time.fixedTime - startFixedTime;
+            var movementAmount = elapsedFixedTime * speed;
+            var e = movement.path.GetEnumerator();
+            e.GoForward(movementAmount);
+            var expectedPosition = (Vector2) e.CurrentPosition;
+            expectedPosition = movement.transform.TransformPoint(expectedPosition);
+            Assert.IsTrue(Vector2.Distance(expectedPosition, body.position) < 0.1f);
+        }
+        [UnityTest]
+        public IEnumerator MovementWorkOnItsLocalSpaceRotation() {
+            movement.transform.position = new Vector3(2, 1, 0);
+            movement.transform.rotation = Quaternion.Euler(0, 0, 45f);
+            var speed = 1f;
+            movement.SetSpeed(speed);
+            movement.TeleportBackwardEnd();
+            Assert.IsTrue(LapsMath.ApproximatelyClose((Vector2)movement.transform.TransformPoint(Vector3.zero), body.position));
+            movement.GoForwards();
+            var startFixedTime = Time.fixedTime;
+            yield return new WaitForSeconds(1.5f);
+            var elapsedFixedTime = Time.fixedTime - startFixedTime;
+            var movementAmount = elapsedFixedTime * speed;
+            var e = movement.path.GetEnumerator();
+            e.GoForward(movementAmount);
+            var expectedPosition = (Vector2) e.CurrentPosition;
+            expectedPosition = movement.transform.TransformPoint(expectedPosition);
+            Assert.IsTrue(Vector2.Distance(expectedPosition, body.position) < 0.1f);
         }
     }
 }

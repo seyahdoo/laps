@@ -62,8 +62,9 @@ namespace LapsRuntime {
             SetPosition(_pathEnumerator.CurrentPosition);
             FireOutput(2);
         }
-        private void SetPosition(Vector2 position) {
-            _body.position = position;
+        private void SetPosition(Vector2 localPosition) {
+            var worldPosition = transform.TransformPoint(localPosition);
+            _body.position = worldPosition;
             _body.velocity = Vector2.zero;
         }
         public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
