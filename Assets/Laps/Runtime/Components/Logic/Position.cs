@@ -1,6 +1,7 @@
 using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Logic/Position")]
     [LapsAddMenuOptions("Logic/Position")]
     public class Position : LapsComponent {
         public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {

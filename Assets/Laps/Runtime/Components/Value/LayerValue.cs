@@ -1,5 +1,7 @@
+using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Value/Layer")]
     [LapsAddMenuOptions("Value/Layer")]
     public class LayerValue : LapsComponent {
         [Layer] public int value;

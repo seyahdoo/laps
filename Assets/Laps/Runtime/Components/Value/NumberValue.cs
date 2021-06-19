@@ -1,5 +1,7 @@
+using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Value/Number")]
     [LapsAddMenuOptions("Value/Number")]
     public class NumberValue : BaseValue<float> {
         public override object HandleInput(int index, object argument, LapsComponent eventSource) {

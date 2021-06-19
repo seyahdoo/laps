@@ -1,6 +1,7 @@
 using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Physics/Laps Transform")]
     [LapsAddMenuOptions("Physics/Laps Transform")]
     public class LapsTransform : LapsComponent {
         private Transform _transform;

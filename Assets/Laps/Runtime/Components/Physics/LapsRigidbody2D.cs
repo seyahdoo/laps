@@ -1,6 +1,7 @@
 using UnityEngine;
 
 namespace LapsRuntime  {
+    [AddComponentMenu("Laps/Physics/Laps Rigidbody 2D")]
     [LapsAddMenuOptions("Physics/Laps Rigidbody 2D")]
     [RequireComponent(typeof(Rigidbody2D))]
     public class LapsRigidbody2D : LapsComponent {

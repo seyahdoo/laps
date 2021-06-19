@@ -1,9 +1,9 @@
-
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Other/Compound")]
     [LapsAddMenuOptions("Other/Compound")]
     public class CompoundComponent : LapsComponent {
         public List<SlotInformation> inputSlots = new List<SlotInformation>();

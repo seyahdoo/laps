@@ -1,5 +1,7 @@
+using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Other/Start Event")]
     [LapsAddMenuOptions("Other/Start Event")]
     public class StartEventComponent : LapsComponent {
         private void Update() {

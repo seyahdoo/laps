@@ -1,6 +1,7 @@
 using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Physics/Collider Listener")]
     [LapsAddMenuOptions("Physics/Collider Listener")]
     public class ColliderListenerComponent : LapsComponent {
         public ActivationMode activationMode;

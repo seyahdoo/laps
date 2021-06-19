@@ -1,6 +1,7 @@
 using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Physics/Rigidbody Operations")]
     [LapsAddMenuOptions("Physics/Rigidbody Operations")]
     public class RigidbodyOperations : LapsComponent {
         private Rigidbody _rigidbody;

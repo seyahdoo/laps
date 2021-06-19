@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Logic/Delay")]
     [LapsAddMenuOptions("Logic/Delay")]
     public class Delay : LapsComponent {
         public float delayAmount = 0f;

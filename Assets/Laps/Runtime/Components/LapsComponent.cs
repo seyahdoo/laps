@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Other/Laps Component")]
+    [LapsAddMenuOptions("Other/Laps Component")]
     public class LapsComponent : MonoBehaviour {
         public const string LOGIC_DEPTH_LIMIT_ERROR_STRING = "Logic depth limit reached! Something must be wrong!";
         private const int LOGIC_DEPTH_LIMIT = 10;

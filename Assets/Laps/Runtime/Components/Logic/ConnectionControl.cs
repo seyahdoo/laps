@@ -1,6 +1,8 @@
+using UnityEngine;
 
 namespace LapsRuntime {
-    [LapsAddMenuOptions("Logic/ConnectionControl")]
+    [AddComponentMenu("Laps/Logic/Connection Control")]
+    [LapsAddMenuOptions("Logic/Connection Control")]
     public class ConnectionControl : LapsComponent {
         public bool enabledOnAwake = true;
         private bool _enabled = false;

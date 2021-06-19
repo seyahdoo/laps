@@ -1,5 +1,7 @@
+using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Physics/Movement")]
     [LapsAddMenuOptions("Physics/Movement")]
     public class Movement : LapsComponent {
         public override void GetInputSlots(SlotList slots) {

@@ -1,6 +1,8 @@
 using System;
+using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Logic/Comparator")]
     [LapsAddMenuOptions("Logic/Comparator")]
     public class Comparator : LapsComponent {
         public enum ComparisonMode {

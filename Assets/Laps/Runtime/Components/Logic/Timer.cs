@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Logic/Timer")]
     [LapsAddMenuOptions("Logic/Timer")]
     public class Timer : LapsComponent {
         public List<float> times = new List<float>() {.5f};

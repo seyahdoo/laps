@@ -1,5 +1,7 @@
+using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Logic/Operator")]
     [LapsAddMenuOptions("Logic/Operator")]
     public class Operator : LapsComponent {
         public float a;

@@ -1,5 +1,7 @@
+using UnityEngine;
 
 namespace LapsRuntime {
+    [AddComponentMenu("Laps/Logic/Get And Fire")]
     [LapsAddMenuOptions("Logic/Get And Fire")]
     public class GetAndFire : LapsComponent {
         public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
