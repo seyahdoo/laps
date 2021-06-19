@@ -10,12 +10,18 @@ namespace LapsRuntime {
         
         private float _direction = 0;
         private float _speed = 0f;
+        private Rigidbody2D _body;
         private Path.PathEnumerator _pathEnumerator;
+        public Rigidbody2D Body => _body;
         public float Direction => _direction;
         public float Speed => _speed;
         public void Awake() {
-            _speed = speed;
             _pathEnumerator = path.GetEnumerator();
+            _speed = speed;
+            _body = body;
+            if (FireOutput(0) is Rigidbody2D outputBody) {
+                _body = outputBody;
+            }
         }
         private void FixedUpdate() {
             var effectiveSpeed = _speed * _direction;
@@ -34,8 +40,8 @@ namespace LapsRuntime {
         public void GoBackwards() {
             _direction = -1f;
         }
-        public void SetSpeed(float speed) {
-            _speed = speed;
+        public void SetSpeed(float speedToSet) {
+            _speed = speedToSet;
         }
         public void Stop() {
             _direction = 0f;
@@ -49,8 +55,20 @@ namespace LapsRuntime {
             SetPosition(_pathEnumerator.CurrentPosition);
         }
         private void SetPosition(Vector2 position) {
-            body.position = position;
-            body.velocity = Vector2.zero;
+            _body.position = position;
+            _body.velocity = Vector2.zero;
+        }
+        public override object HandleInput(int slotId, object parameter, LapsComponent eventSource) {
+            switch (slotId) {
+                case 0:  _body = (Rigidbody2D) parameter; return null;
+                case 1:  GoForwards(); return null;
+                case 2:  GoBackwards(); return null;
+                case 3:  SetSpeed((float)parameter); return null;
+                case 4:  Stop(); return null;
+                case 5:  TeleportForwardEnd(); return null;
+                case 6:  TeleportBackwardEnd(); return null;
+                default: return null;
+            }
         }
         public override void GetInputSlots(SlotList slots) {
             slots.Add("set body", 0, typeof(Rigidbody2D));
