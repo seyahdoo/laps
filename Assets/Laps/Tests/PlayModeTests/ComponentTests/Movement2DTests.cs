@@ -1,4 +1,5 @@
 using System.Collections;
+using LapsEditModeTests;
 using LapsEditor;
 using LapsRuntime;
 using NUnit.Framework;
@@ -12,6 +13,7 @@ namespace LapsPlayModeTests {
         public Movement2D movement;
         public Rigidbody2D body;
         public LapsRigidbody2D lapsBody;
+        public TestComponent test;
         [SetUp]
         public void Setup() {
             movement = new GameObject().AddComponent<Movement2D>();
@@ -26,11 +28,13 @@ namespace LapsPlayModeTests {
             lapsBody = go.AddComponent<LapsRigidbody2D>();
             movement.body = this.body;
             movement.Awake();
+            test = new GameObject().AddComponent<TestComponent>();
         }
         [TearDown]
         public void Teardown() {
             Object.DestroyImmediate(movement.gameObject);
             Object.DestroyImmediate(body.gameObject);
+            Object.DestroyImmediate(test.gameObject);
         }
         [Test]
         public void Slots() {
@@ -203,7 +207,34 @@ namespace LapsPlayModeTests {
             movement.Awake();
             Assert.AreEqual(body, movement.Body);
         }
-        [Test] public void ForwardsFinishedSlot() { Assert.Fail(); }
-        [Test] public void BackwardsFinishedSlot() { Assert.Fail(); }
+        [Test]
+        public void ForwardsFinishedOnTeleportSlot() {
+            LogicModule.Connect(movement, 1, test, 0);
+            movement.TeleportForwardEnd();
+            Assert.AreEqual(1, test.inputCallCount);
+        }
+        [UnityTest]
+        public IEnumerator ForwardsFinishedNormalSlot() {
+            LogicModule.Connect(movement, 1, test, 0);
+            movement.SetSpeed(4f);
+            movement.GoForwards();
+            yield return new WaitForSeconds(1f);
+            Assert.AreEqual(1, test.inputCallCount);
+        }
+        [Test]
+        public void BackwardsFinishedOnTeleportSlot() {
+            LogicModule.Connect(movement, 2, test, 0);
+            movement.TeleportBackwardEnd();
+            Assert.AreEqual(1, test.inputCallCount);
+        }
+        [UnityTest]
+        public IEnumerator BackwardsFinishedNormalSlot() {
+            LogicModule.Connect(movement, 2, test, 0);
+            movement.TeleportForwardEnd();
+            movement.SetSpeed(4f);
+            movement.GoBackwards();
+            yield return new WaitForSeconds(1f);
+            Assert.AreEqual(1, test.inputCallCount);
+        }
     }
 }

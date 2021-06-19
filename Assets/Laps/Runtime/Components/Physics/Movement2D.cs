@@ -27,10 +27,16 @@ namespace LapsRuntime {
             var effectiveSpeed = _speed * _direction;
             var distance = effectiveSpeed * Time.fixedDeltaTime;
             if (distance > 0) {
-                _pathEnumerator.GoForward(distance);
+                if (!_pathEnumerator.GoForward(distance)) {
+                    Stop();
+                    FireOutput(1);
+                }
             }
             if (distance < 0) {
-                _pathEnumerator.GoBackward(-distance);
+                if (!_pathEnumerator.GoBackward(-distance)) {
+                    Stop();
+                    FireOutput(2);
+                }
             }
             SetPosition(_pathEnumerator.CurrentPosition);
         }
@@ -49,10 +55,12 @@ namespace LapsRuntime {
         public void TeleportForwardEnd() {
             _pathEnumerator.GoToEndPoint();
             SetPosition(_pathEnumerator.CurrentPosition);
+            FireOutput(1);
         }
         public void TeleportBackwardEnd() {
             _pathEnumerator.Reset();
             SetPosition(_pathEnumerator.CurrentPosition);
+            FireOutput(2);
         }
         private void SetPosition(Vector2 position) {
             _body.position = position;
