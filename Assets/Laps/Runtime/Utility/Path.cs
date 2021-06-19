@@ -41,6 +41,12 @@ namespace LapsRuntime {
                 _progress = 0f;
                 return true;
             }
+            public void GoToEndPoint() {
+                _progress = 0f;
+                _currentIndex = _path.points.Count - 1;
+                _previousIndex = _currentIndex - 1;
+                _nextIndex = _currentIndex;
+            }
             public bool GoToPreviousPoint() {
                 var prevIndex = GetPrevIndex(_currentIndex);
                 if (prevIndex == _currentIndex) {

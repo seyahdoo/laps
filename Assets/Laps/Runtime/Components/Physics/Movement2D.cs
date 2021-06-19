@@ -11,7 +11,8 @@ namespace LapsRuntime {
         private float _direction = 0;
         private float _speed = 0f;
         private Path.PathEnumerator _pathEnumerator;
-
+        public float Direction => _direction;
+        public float Speed => _speed;
         public void Awake() {
             _speed = speed;
             _pathEnumerator = path.GetEnumerator();
@@ -25,27 +26,31 @@ namespace LapsRuntime {
             if (distance < 0) {
                 _pathEnumerator.GoBackward(-distance);
             }
-            body.position = _pathEnumerator.CurrentPosition;
-            body.velocity = Vector2.zero;
+            SetPosition(_pathEnumerator.CurrentPosition);
         }
         public void GoForwards() {
             _direction = 1f;
         }
         public void GoBackwards() {
-            throw new System.NotImplementedException();
+            _direction = -1f;
         }
         public void SetSpeed(float speed) {
             _speed = speed;
         }
         public void Stop() {
-            throw new System.NotImplementedException();
+            _direction = 0f;
         }
         public void TeleportForwardEnd() {
-            throw new System.NotImplementedException();
+            _pathEnumerator.GoToEndPoint();
+            SetPosition(_pathEnumerator.CurrentPosition);
         }
         public void TeleportBackwardEnd() {
             _pathEnumerator.Reset();
-            body.position = _pathEnumerator.CurrentPosition;
+            SetPosition(_pathEnumerator.CurrentPosition);
+        }
+        private void SetPosition(Vector2 position) {
+            body.position = position;
+            body.velocity = Vector2.zero;
         }
         public override void GetInputSlots(SlotList slots) {
             slots.Add("set body", 0, typeof(Rigidbody2D));

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Numerics;
 using LapsRuntime;
 using NUnit.Framework;
 using UnityEngine;
@@ -15,7 +14,7 @@ namespace LapsPlayModeTests {
         public void Setup() {
             movement = new GameObject().AddComponent<Movement2D>();
             movement.path.points.Clear();
-            movement.path.points.Add(Vector3.zero);
+            movement.path.points.Add(new Vector3(0,0,0));
             movement.path.points.Add(new Vector3(1,0,0));
             movement.path.points.Add(new Vector3(1,1,0));
             movement.path.points.Add(new Vector3(2,1,0));
@@ -50,8 +49,9 @@ namespace LapsPlayModeTests {
             Assert.AreEqual(new LogicSlot("backwards finished", 2), slots[2]);
         }
         [UnityTest]
-        public IEnumerator GoForwards() {
-            var speed = 1f;
+        [TestCase(1f, ExpectedResult = null)]
+        [TestCase(2f, ExpectedResult = null)]
+        public IEnumerator GoForwards(float speed) {
             movement.SetSpeed(speed);
             movement.TeleportBackwardEnd();
             Assert.IsTrue(LapsMath.ApproximatelyClose(Vector2.zero, body.position));
@@ -63,6 +63,49 @@ namespace LapsPlayModeTests {
             var e = movement.path.GetEnumerator();
             e.GoForward(movementAmount);
             var expectedPosition = (Vector2) e.CurrentPosition;
+            Assert.IsTrue(Vector2.Distance(expectedPosition, body.position) < 0.1f);
+        }
+        [UnityTest]
+        public IEnumerator TeleportToForwardEnd() {
+            movement.TeleportForwardEnd();
+            Assert.IsTrue(LapsMath.ApproximatelyClose((Vector2)movement.path.points[3], body.position));
+            yield return null;
+        }
+        [UnityTest]
+        [TestCase(1f, ExpectedResult = null)]
+        [TestCase(2f, ExpectedResult = null)]
+        public IEnumerator GoBackwards(float speed) {
+            movement.SetSpeed(speed);
+            movement.TeleportForwardEnd();
+            Assert.IsTrue(LapsMath.ApproximatelyClose((Vector2)movement.path.points[3], body.position));
+            movement.GoBackwards();
+            var startFixedTime = Time.fixedTime;
+            yield return new WaitForSeconds(1.5f);
+            var elapsedFixedTime = Time.fixedTime - startFixedTime;
+            var movementAmount = elapsedFixedTime * speed;
+            var e = movement.path.GetEnumerator();
+            e.GoToEndPoint();
+            e.GoBackward(movementAmount);
+            var expectedPosition = (Vector2) e.CurrentPosition;
+            Assert.IsTrue(Vector2.Distance(expectedPosition, body.position) < 0.1f);
+        }
+        [UnityTest]
+        public IEnumerator Stop() {
+            var speed = 1f;
+            movement.SetSpeed(speed);
+            movement.TeleportBackwardEnd();
+            Assert.IsTrue(LapsMath.ApproximatelyClose(Vector2.zero, body.position));
+            movement.GoForwards();
+            var startFixedTime = Time.fixedTime;
+            yield return new WaitForSeconds(0.5f);
+            var elapsedFixedTime = Time.fixedTime - startFixedTime;
+            var movementAmount = elapsedFixedTime * speed;
+            var e = movement.path.GetEnumerator();
+            e.GoForward(movementAmount);
+            var expectedPosition = (Vector2) e.CurrentPosition;
+            Assert.IsTrue(Vector2.Distance(expectedPosition, body.position) < 0.1f);
+            movement.Stop();
+            yield return new WaitForSeconds(0.5f);
             Assert.IsTrue(Vector2.Distance(expectedPosition, body.position) < 0.1f);
         }
     }
