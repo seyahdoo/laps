@@ -6,11 +6,13 @@ namespace LapsEditor {
     public class PathEditor {
         private static readonly int HandleHintHash = nameof(PathEditor).GetHashCode();
         private Path _path;
+        private int _lastControlID;
         public PathEditor(Path path) {
             _path = path;
         }
         public void OnSceneGUI() {
             int id = GUIUtility.GetControlID(HandleHintHash, FocusType.Passive);
+            _lastControlID = id;
             switch (Event.current.GetTypeForControl(id)) {
                 case EventType.MouseDown:
                     if (Event.current.button == 0 && HandleUtility.nearestControl == id) {
@@ -49,7 +51,12 @@ namespace LapsEditor {
             return 100f;
         }
         private void OnRepaint(bool isHotControl, bool isNearestControl) {
-            
+            var e = _path.GetEnumerator();
+            do {
+                var size = HandleUtility.GetHandleSize(e.CurrentPosition);
+                size *= .2f;
+                Handles.SphereHandleCap(_lastControlID, e.CurrentPosition, Quaternion.identity, size, EventType.Repaint);
+            } while (e.GoToNextPoint());
         }
         private void OnMouseDrag() {
         }
