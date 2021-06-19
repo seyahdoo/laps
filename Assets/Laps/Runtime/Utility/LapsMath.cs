@@ -14,6 +14,12 @@ namespace LapsRuntime {
         public static bool ApproximatelyClose(float f1, float f2) {
             return Mathf.Abs(f1 - f2) < Epsilon;
         }
+        public static bool ApproximatelyClose(Vector2 v1, Vector2 v2) {
+            return Vector2.Distance(v1, v2) < Epsilon;
+        }
+        public static bool ApproximatelyClose(Vector3 v1, Vector3 v2) {
+            return Vector3.Distance(v1, v2) < Epsilon;
+        }
         public static bool LayerMaskContains(LayerMask layerMask, int layer) {
             return layerMask == (layerMask | (1 << layer));
         }
