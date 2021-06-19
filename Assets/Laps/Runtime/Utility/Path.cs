@@ -6,7 +6,6 @@ namespace LapsRuntime {
     [Serializable]
     public class Path {
         public List<Vector3> points = new List<Vector3>(){Vector3.zero, Vector3.right};
-        public bool closed = false;
 
         public bool IsValid => points.Count >= 2;
         public PathEnumerator GetEnumerator() {

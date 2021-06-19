@@ -43,7 +43,6 @@ namespace LapsEditModeTests {
         [Test]
         public void DefaultValuesAreCorrect() {
             Assert.AreEqual(new List<Vector3>(){Vector3.zero, Vector3.right}, path.points);
-            Assert.AreEqual(false, path.closed);
         }
         [Test]
         public void MoveToNextPoint() {
