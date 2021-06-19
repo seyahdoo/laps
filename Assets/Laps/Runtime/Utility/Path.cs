@@ -75,10 +75,27 @@ namespace LapsRuntime {
                         return true;
                     }
                 }
-                return true;
+                return killSwitch > 0;
             }
             public bool GoBackward(float distance) {
-                throw new NotImplementedException();
+                int killSwitch = _path.points.Count + 1;
+                while (killSwitch-- > 0 && distance > 0) {
+                    var distanceOfCurrentAndNextPoint = Vector3.Distance(_path.points[_currentIndex], _path.points[_nextIndex]);
+                    var leftDistance = (_progress) * distanceOfCurrentAndNextPoint;
+                    if (distance > leftDistance) {
+                        _progress = 1f;
+                        distance -= leftDistance;
+                        if (!GoToPreviousPoint()) {
+                            return false;
+                        }
+                    }
+                    else {
+                        var p = distance / distanceOfCurrentAndNextPoint;
+                        _progress -= p;
+                        return true;
+                    }
+                }
+                return killSwitch > 0;
             }
             private int GetNextIndex(int current) {
                 if (current <= _path.points.Count - 2) {
@@ -95,6 +112,9 @@ namespace LapsRuntime {
                 else {
                     return current;
                 }
+            }
+            public void Reset() {
+                this = new PathEnumerator(_path);
             }
         }
     }

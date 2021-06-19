@@ -165,15 +165,75 @@ namespace LapsEditModeTests {
             Assert.IsTrue(e.GoToNextPoint());
             Assert.AreEqual(Vector3.right * 2f, e.CurrentPosition);
         }
-        [Test] public void MoveForwardGiganticAmound() { Assert.Fail(); }
-        [Test] public void MoveForwardNormalAmound() { Assert.Fail(); }
-        [Test] public void MoveBackwardGiganticAmound() { Assert.Fail(); }
-        [Test] public void MoveBackwardNormalAmound() { Assert.Fail(); }
-        [Test] public void MoveForwardOnLastPoint() { Assert.Fail(); }
-        [Test] public void MoveBackwardOnFirstPoint() { Assert.Fail(); }
-        [Test] public void MoveForwardsSkippingTwoPoints() { Assert.Fail(); }
-        [Test] public void MoveBackwardsSkippingTwoPoints() { Assert.Fail(); }
-        [Test] public void EnumeratorReset() { Assert.Fail(); }
-        // [Test] public void Test() { Assert.Fail(); }
+        [Test]
+        public void GoBackwardsWithoutGointToPreviousPoint() {
+            path.points = new List<Vector3>() {Vector3.zero, new Vector3(1f,0f,0f), new Vector3(1f,1f,0f)};
+            var e = path.GetEnumerator();
+            Assert.IsFalse(e.GoForward(4f));
+            Assert.AreEqual(new Vector3(1f,1f,0f), e.CurrentPosition);
+            Assert.IsTrue(e.GoBackward(.5f));
+            Assert.AreEqual(new Vector3(1f,.5f,0f), e.CurrentPosition);
+            Assert.IsTrue(e.GoBackward(.1f));
+            Assert.AreEqual(new Vector3(1f,.4f,0f), e.CurrentPosition);
+        }
+        [Test]
+        public void GoBackwardsWithGointToPreviousPoint() {
+            path.points = new List<Vector3>() {Vector3.zero, new Vector3(1f,0f,0f), new Vector3(1f,1f,0f)};
+            var e = path.GetEnumerator();
+            Assert.IsFalse(e.GoForward(4f));
+            Assert.AreEqual(new Vector3(1f,1f,0f), e.CurrentPosition);
+            Assert.IsTrue(e.GoBackward(1.5f));
+            Assert.AreEqual(new Vector3(.5f,0f,0f), e.CurrentPosition);
+        }
+        [Test]
+        public void GoBackwardsWithGointToPreviousTwoPoint() {
+            path.points = new List<Vector3>() {Vector3.zero, new Vector3(1f,0f,0f), new Vector3(1f,1f,0f), new Vector3(2f,1f,0f)};
+            var e = path.GetEnumerator();
+            Assert.IsFalse(e.GoForward(10f));
+            Assert.AreEqual(new Vector3(2f,1f,0f), e.CurrentPosition);
+            Assert.IsTrue(e.GoBackward(2.5f));
+            Assert.AreEqual(new Vector3(.5f,0f,0f), e.CurrentPosition);
+        }
+        [Test]
+        public void GoBackwardsWithGointToPreviousLastPoint() {
+            path.points = new List<Vector3>() {Vector3.zero, new Vector3(1f,0f,0f), new Vector3(1f,1f,0f), new Vector3(2f,1f,0f)};
+            var e = path.GetEnumerator();
+            Assert.IsFalse(e.GoForward(10f));
+            Assert.AreEqual(new Vector3(2f,1f,0f), e.CurrentPosition);
+            Assert.IsFalse(e.GoBackward(3.5f));
+            Assert.AreEqual(new Vector3(0f,0f,0f), e.CurrentPosition);
+        }
+        [Test]
+        public void MoveForwardOnLastPoint() {
+            path.points = new List<Vector3>() {Vector3.zero, new Vector3(1f,0f,0f), new Vector3(1f,1f,0f), new Vector3(2f,1f,0f)};
+            var e = path.GetEnumerator();
+            Assert.IsFalse(e.GoForward(10f));
+            Assert.AreEqual(new Vector3(2f,1f,0f), e.CurrentPosition);
+            Assert.IsFalse(e.GoForward(10f));
+            Assert.AreEqual(new Vector3(2f,1f,0f), e.CurrentPosition);
+        }
+        [Test]
+        public void MoveBackwardOnFirstPoint() {
+            path.points = new List<Vector3>() {Vector3.zero, new Vector3(1f,0f,0f), new Vector3(1f,1f,0f), new Vector3(2f,1f,0f)};
+            var e = path.GetEnumerator();
+            Assert.IsFalse(e.GoForward(10f));
+            Assert.AreEqual(new Vector3(2f,1f,0f), e.CurrentPosition);
+            Assert.IsFalse(e.GoBackward(10f));
+            Assert.AreEqual(new Vector3(0f,0f,0f), e.CurrentPosition);
+            Assert.IsFalse(e.GoBackward(10f));
+            Assert.AreEqual(new Vector3(0f,0f,0f), e.CurrentPosition);
+        }
+        [Test]
+        public void EnumeratorReset() {
+            path.points = new List<Vector3>() {Vector3.zero, new Vector3(1f,0f,0f), new Vector3(1f,1f,0f), new Vector3(2f,1f,0f)};
+            var e = path.GetEnumerator();
+            Assert.IsFalse(e.GoForward(10f));
+            Assert.AreEqual(new Vector3(2f,1f,0f), e.CurrentPosition);
+            e.Reset();
+            Assert.AreEqual(new Vector3(0f,0f,0f), e.CurrentPosition);
+            Assert.AreEqual(0, e.PreviousPointIndex);
+            Assert.AreEqual(0, e.CurrentPointIndex);
+            Assert.AreEqual(1, e.NextPointIndex);
+        }
     }
 }
