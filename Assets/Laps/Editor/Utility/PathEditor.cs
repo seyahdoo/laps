@@ -86,7 +86,7 @@ namespace LapsEditor {
             if (minDistance < PointPressDistance) {
                 return 0;
             }
-            return minDistance;
+            return 5f;
         }
         private void OnRepaint(bool isHotControl, bool isNearestControl) {
             for (var i = 0; i < _path.points.Count - 1; i++) {
@@ -136,9 +136,22 @@ namespace LapsEditor {
         private void OnMouseUp() {
             if (TryGetPressedPointIndex(out var upPoint)) {
                 if (_pressedPoint == upPoint && !_dragged) {
-                    _selection.Clear();
-                    _selection.Add(_pressedPoint);
+                    if (Event.current.control || Event.current.shift) {
+                        if (_selection.Contains(_pressedPoint)) {
+                            _selection.Remove(_pressedPoint);
+                        }
+                        else {
+                            _selection.Add(_pressedPoint);
+                        }
+                    }
+                    else {
+                        _selection.Clear();
+                        _selection.Add(_pressedPoint);
+                    }
+                    
                 }
+                
+                
             }
         }
         private void OnMouseDown() {
