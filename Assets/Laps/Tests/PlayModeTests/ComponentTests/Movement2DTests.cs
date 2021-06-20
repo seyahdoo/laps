@@ -273,5 +273,10 @@ namespace LapsPlayModeTests {
             expectedPosition = movement.transform.TransformPoint(expectedPosition);
             Assert.IsTrue(Vector2.Distance(expectedPosition, body.position) < 0.1f);
         }
+        [UnityTest]
+        public IEnumerator StartAtAwake() {
+            yield return null;
+            Assert.Fail();
+        }
     }
 }

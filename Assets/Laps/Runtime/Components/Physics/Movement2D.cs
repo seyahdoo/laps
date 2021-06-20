@@ -7,6 +7,7 @@ namespace LapsRuntime {
         public Path path = new Path();
         public Rigidbody2D body;
         public float speed = 1f;
+        public bool startAtAwake = false;
         
         private float _direction = 0;
         private float _speed = 0f;
@@ -21,6 +22,9 @@ namespace LapsRuntime {
             _body = body;
             if (FireOutput(0) is Rigidbody2D outputBody) {
                 _body = outputBody;
+            }
+            if (startAtAwake) {
+                GoForwards();
             }
         }
         private void FixedUpdate() {
