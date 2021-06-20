@@ -1,3 +1,4 @@
+using LapsEditor.Utility;
 using LapsRuntime;
 using UnityEditor;
 using UnityEngine;
@@ -16,11 +17,15 @@ namespace LapsEditor {
             base.OnInspectorGUI();
             if (GUILayout.Button((_editing ? "Exit" : "Enter") + " Edit Mode")) {
                 _editing = !_editing;
+                Repaint();
+                SceneView.RepaintAll();
             }
         }
         private void OnSceneGUI() {
             if (_editing) {
-                _pathEditor.OnSceneGUI();
+                using (Scopes.HandlesMatrix(_movement.transform.localToWorldMatrix)) {
+                    _pathEditor.OnSceneGUI();
+                }
             }
         }
     }
