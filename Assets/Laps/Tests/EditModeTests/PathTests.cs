@@ -85,6 +85,10 @@ namespace LapsEditModeTests {
             Assert.AreEqual(0, e.PreviousPointIndex);
             Assert.AreEqual(0, e.CurrentPointIndex);
             Assert.AreEqual(1, e.NextPointIndex);
+            Assert.IsTrue(e.GoToPreviousPoint());
+            Assert.AreEqual(0, e.PreviousPointIndex);
+            Assert.AreEqual(0, e.CurrentPointIndex);
+            Assert.AreEqual(1, e.NextPointIndex);
             Assert.IsFalse(e.GoToPreviousPoint());
             Assert.AreEqual(0, e.PreviousPointIndex);
             Assert.AreEqual(0, e.CurrentPointIndex);
