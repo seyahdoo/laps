@@ -275,8 +275,18 @@ namespace LapsPlayModeTests {
         }
         [UnityTest]
         public IEnumerator StartAtAwake() {
-            yield return null;
-            Assert.Fail();
+            var speed = 3f;
+            movement.startAtAwake = true;
+            movement.speed = speed;
+            movement.Awake();
+            var startFixedTime = Time.fixedTime;
+            yield return new WaitForSeconds(1.5f);
+            var elapsedFixedTime = Time.fixedTime - startFixedTime;
+            var movementAmount = elapsedFixedTime * speed;
+            var e = movement.path.GetEnumerator();
+            e.GoForward(movementAmount);
+            var expectedPosition = (Vector2) e.CurrentPosition;
+            Assert.IsTrue(Vector2.Distance(expectedPosition, body.position) < 0.1f);
         }
     }
 }
