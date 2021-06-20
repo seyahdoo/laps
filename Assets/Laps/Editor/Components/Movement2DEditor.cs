@@ -22,10 +22,8 @@ namespace LapsEditor {
             }
         }
         private void OnSceneGUI() {
-            if (_editing) {
-                using (Scopes.HandlesMatrix(_movement.transform.localToWorldMatrix)) {
-                    _pathEditor.OnSceneGUI();
-                }
+            using (Scopes.HandlesMatrix(_movement.transform.localToWorldMatrix)) {
+                _pathEditor.OnSceneGUI(_editing);
             }
         }
     }

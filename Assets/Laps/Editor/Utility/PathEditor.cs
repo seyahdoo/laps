@@ -24,8 +24,22 @@ namespace LapsEditor {
         public PathEditor(Path path) {
             _path = path;
         }
-        public void OnSceneGUI() {
-            CustomHandle();
+        public void OnSceneGUI(bool editEnabled) {
+            if (editEnabled) {
+                CustomHandle();
+            }
+            else {
+                DrawTheLine();
+            }
+        }
+        private void DrawTheLine() {
+            for (var i = 0; i < _path.points.Count - 1; i++) {
+                var p1 = _path.points[i];
+                var p2 = _path.points[i + 1];
+                using (Scopes.HandlesColor(LineColor)) {
+                    Handles.DrawLine(p1, p2, LineThickness);
+                }
+            }
         }
         private void FreeMove() {
             for (var i = 0; i < _path.points.Count; i++) {
@@ -98,12 +112,24 @@ namespace LapsEditor {
             }
             for (var i = 0; i < _path.points.Count; i++) {
                 var position = _path.points[i];
-                var size = HandleUtility.GetHandleSize(position);
-                size *= PointRadius;
-                using (Scopes.HandlesColor(_selection.Contains(i) ? SelectedPointColor : PointColor)) {
-                    Handles.SphereHandleCap(_lastControlID, position, Quaternion.identity, size, EventType.Repaint);
+                var color = _selection.Contains(i) ? SelectedPointColor : PointColor;
+                DrawOurSphere(position, color);
+            }
+            if (Event.current.shift) {
+                GetAddRemovePoint(out var shouldRemove, out var shouldAdd, out int index, out Vector3 addPosition);
+                if (shouldRemove) {
+                    DrawOurSphere(_path.points[index], Color.red);
                 }
-                _path.points[i] = position;
+                if (shouldAdd) {
+                    DrawOurSphere(addPosition, Color.green);
+                }
+            }
+        }
+        private void DrawOurSphere(Vector3 position, Color color) {
+            var size = HandleUtility.GetHandleSize(position);
+            size *= PointRadius;
+            using (Scopes.HandlesColor(color)) {
+                Handles.SphereHandleCap(_lastControlID, position, Quaternion.identity, size, EventType.Repaint);
             }
         }
         private void OnMouseDrag() {
@@ -158,6 +184,19 @@ namespace LapsEditor {
             _dragged = false;
             _startMousePosition = Event.current.mousePosition;
             TryGetPressedPointIndex(out _pressedPoint);
+            if (Event.current.shift) {
+                GetAddRemovePoint(out var shouldRemove, out var shouldAdd, out int index, out Vector3 addPosition);
+                if (shouldAdd) {
+                    _path.points.Insert(index + 1, addPosition);
+                    _selection.Clear();
+                    _pressedPoint = index + 1;
+                }
+                if (shouldRemove) {
+                    _selection.Clear();
+                    _path.points.RemoveAt(index);
+                    _pressedPoint = -1;
+                }
+            }
         }
         private bool TryGetPressedPointIndex(out int index) {
             var minDistance = float.PositiveInfinity;
@@ -186,7 +225,47 @@ namespace LapsEditor {
                 _path.points[i] += delta;
             }
         }
-        //add remove logic
-        
+        private void GetAddRemovePoint(out bool shouldRemove, out bool shouldAdd, out int index, out Vector3 addPosition) {
+            //if close to an existing point, remove that
+            if (TryGetPressedPointIndex(out var pressedIndex)) {
+                index = pressedIndex;
+                addPosition = Vector3.zero;
+                shouldRemove = true;
+                shouldAdd = false;
+                return;
+            }
+            //if close to line add in between that
+            index = -1;
+            var closestDistance = float.MaxValue;
+            for (var i = 0; i < _path.points.Count - 1; i++) {
+                var l1 = _path.points[i];
+                var l1gui = HandleUtility.WorldToGUIPoint(l1);
+                var l2 = _path.points[i + 1];
+                var l2gui = HandleUtility.WorldToGUIPoint(l2);
+                var distance = HandleUtility.DistancePointLine(Event.current.mousePosition, l1gui, l2gui);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    index = i;
+                }
+            }
+            shouldAdd = true;
+            shouldRemove = false;
+
+            var worldToLocalMatrix = Handles.inverseMatrix;
+            var point = _path.points[index];
+            var forwardWorld = Camera.current.transform.forward;
+            var forwardLocal = worldToLocalMatrix.MultiplyVector(forwardWorld);
+            var localPlane = new Plane(forwardLocal, point);
+            var worldRay = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+            var localRay = new Ray(
+                worldToLocalMatrix.MultiplyPoint(worldRay.origin),
+                worldToLocalMatrix.MultiplyVector(worldRay.direction));
+            if (localPlane.Raycast(localRay, out float enter)) {
+                addPosition = localRay.GetPoint(enter);
+                return;
+            }
+            addPosition = (_path.points[index] + _path.points[index + 1]) / 2f;
+            return;
+        }
     }
 }
