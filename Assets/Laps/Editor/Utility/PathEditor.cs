@@ -11,7 +11,8 @@ namespace LapsEditor {
         private static readonly Color LineColor = Color.white;
         private static readonly Color SelectedPointColor = Color.blue;
         private static readonly Color PointColor = Color.white;
-        private static readonly float PointPressDistance = 10f;
+        private static readonly float PointPressDistance = 20f;
+        private static readonly float PointRadius = .4f;
         
         private Path _path;
         private int _lastControlID;
@@ -82,6 +83,9 @@ namespace LapsEditor {
                     minDistance = distance;
                 }
             }
+            if (minDistance < PointPressDistance) {
+                return 0;
+            }
             return minDistance;
         }
         private void OnRepaint(bool isHotControl, bool isNearestControl) {
@@ -95,7 +99,7 @@ namespace LapsEditor {
             for (var i = 0; i < _path.points.Count; i++) {
                 var position = _path.points[i];
                 var size = HandleUtility.GetHandleSize(position);
-                size *= .2f;
+                size *= PointRadius;
                 using (Scopes.HandlesColor(_selection.Contains(i) ? SelectedPointColor : PointColor)) {
                     Handles.SphereHandleCap(_lastControlID, position, Quaternion.identity, size, EventType.Repaint);
                 }
@@ -107,7 +111,8 @@ namespace LapsEditor {
             //if point pressed, drag that
             if (_pressedPoint >= 0) {
                 var delta = Event.current.delta;
-                var selectionCenterPosition = GetSelectionLocalCenterPosition();
+                // var selectionCenterPosition = GetSelectionLocalCenterPosition();
+                var selectionCenterPosition = _path.points[_pressedPoint];
                 var cameraTransform = Camera.current.transform;
                 var worldToLocalMatrix = Handles.matrix.inverse;
                 var cameraLocalNormal = worldToLocalMatrix.MultiplyVector(cameraTransform.forward);
@@ -121,7 +126,8 @@ namespace LapsEditor {
                     worldToLocalMatrix.MultiplyVector(newPositionWorldRay.direction));
                 if (localPlane.Raycast(newPositionLocalRay, out float enter)) {
                     var newLocalPosition = newPositionLocalRay.GetPoint(enter);
-                    ShiftSelectionCenter(newLocalPosition - selectionCenterPosition);
+                    // ShiftSelectionCenter(newLocalPosition - selectionCenterPosition);
+                    _path.points[_pressedPoint] += newLocalPosition - selectionCenterPosition;
                     GUI.changed = true;
                 }
             }
@@ -167,5 +173,7 @@ namespace LapsEditor {
                 _path.points[i] += delta;
             }
         }
+        //add remove logic
+        
     }
 }
