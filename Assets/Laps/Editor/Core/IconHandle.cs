@@ -89,7 +89,8 @@ namespace LapsEditor {
                 position.y = _startWorldPosition.y;
             if (Camera.current.transform.forward == Vector3.right || Camera.current.transform.forward == -Vector3.right)
                 position.x = _startWorldPosition.x;
-
+            
+            Undo.RecordObject(lapsComponent.transform, "position change by icon handle");
             lapsComponent.transform.position = position;
             GUI.changed = true;
         }
