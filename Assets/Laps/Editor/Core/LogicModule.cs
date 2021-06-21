@@ -48,15 +48,33 @@ namespace LapsEditor {
             });
         }
         private bool ToggleLogicEditMode() {
-            _logicEditModeEnabled = !_logicEditModeEnabled;
-            return true;
+            if (Selection.activeGameObject != null) {
+                if (Selection.activeGameObject.GetComponent<LapsComponent>() != null) {
+                    _logicEditModeEnabled = !_logicEditModeEnabled;
+                    return true;
+                }
+            }
+            return false;
         }
         public void OnSceneGUI() {
             _shortcutManager.HandleInput();
+            DisableLogicModeIfLapsComponentUnselected();
             HandleToolOnLogicMode();
             if (_logicEditModeEnabled) {
                 SetupConnectionFireFeedbackActions();
                 HandleTheHandle();
+            }
+        }
+        private void DisableLogicModeIfLapsComponentUnselected() {
+            if (_logicEditModeEnabled) {
+                if (Selection.activeGameObject == null) {
+                    _logicEditModeEnabled = false;
+                    return;
+                }
+                if (Selection.activeGameObject.GetComponent<LapsComponent>() == null) {
+                    _logicEditModeEnabled = false;
+                    return;
+                }
             }
         }
         private void HandleToolOnLogicMode() {
