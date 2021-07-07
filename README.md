@@ -1,10 +1,13 @@
-# laps project
-old laps framework project got deleted due to licensing issues. sorry for the inconvinience
+# Laps Project
+Laps is a visual scripting addon for unity. It lets designers craft memorable levels in minutes. 
 
-# what happens now
-i will re-write the whole reposity from scratch. it should be in playable state in 1-2 months
+# Basic Controls
+- If an object in level has a laps component attached to it, it will show up a gizmo that you can drag around.
+- If you select a laps component and press S keyboard shortcut, you will see logic slots in scene view.
+- You can connect two logic slot if you start dragging from one slot and drop into the other slot.
+- You can delete a connection if you click the input slot or the target slot of that connection.
 
-# what should i do
+# What To Do Next
 - join our discord server
 - help development by contacting seyahdoo (you can do it through discord)
 - wish me luck i guess.
