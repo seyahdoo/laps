@@ -135,7 +135,7 @@ namespace LapsEditor.Utility {
         }
         
         //Horizontal
-        public static HorizontalEnd Horizontal(GUIStyle style = null) {
+        public static HorizontalEnd Horizontal(GUIStyle style) {
             EditorGUILayout.BeginHorizontal(style);
             return new HorizontalEnd();
         }
