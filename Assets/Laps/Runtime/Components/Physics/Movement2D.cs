@@ -34,15 +34,17 @@ namespace LapsRuntime {
                 if (!_pathEnumerator.GoForward(distance)) {
                     Stop();
                     FireOutput(1);
+                    return;
                 }
             }
             if (distance < 0) {
                 if (!_pathEnumerator.GoBackward(-distance)) {
                     Stop();
                     FireOutput(2);
+                    return;
                 }
             }
-            SetPosition(_pathEnumerator.CurrentPosition);
+            MoveToPosition(_pathEnumerator.CurrentPosition);
         }
         public void GoForwards() {
             _direction = 1f;
@@ -55,18 +57,23 @@ namespace LapsRuntime {
         }
         public void Stop() {
             _direction = 0f;
+            TeleportToPosition(_pathEnumerator.CurrentPosition);
         }
         public void TeleportForwardEnd() {
             _pathEnumerator.GoToEndPoint();
-            SetPosition(_pathEnumerator.CurrentPosition);
+            TeleportToPosition(_pathEnumerator.CurrentPosition);
             FireOutput(1);
         }
         public void TeleportBackwardEnd() {
             _pathEnumerator.Reset();
-            SetPosition(_pathEnumerator.CurrentPosition);
+            TeleportToPosition(_pathEnumerator.CurrentPosition);
             FireOutput(2);
         }
-        private void SetPosition(Vector2 localPosition) {
+        private void MoveToPosition(Vector2 localPosition) {
+            var worldPosition = transform.TransformPoint(localPosition);
+            _body.velocity = ((Vector2)worldPosition - _body.position) / Time.fixedDeltaTime;
+        }
+        private void TeleportToPosition(Vector2 localPosition) {
             var worldPosition = transform.TransformPoint(localPosition);
             _body.position = worldPosition;
             _body.velocity = Vector2.zero;
