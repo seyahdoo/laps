@@ -12,7 +12,7 @@ namespace LapsEditor {
         private void OnSceneGUI() {
             EnsureSettings();
         }
-        private void EnsureSettings() {
+        public void EnsureSettings() {
             var audioClipPlayer = (AudioClipPlayer) target;
             var audioSource = audioClipPlayer.GetComponent<AudioSource>();
             if (audioSource.playOnAwake) {

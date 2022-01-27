@@ -8,7 +8,8 @@ using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace LapsPlayModeTests {
-    public class AudioClipPlayerTests {
+    public class AudioClipPlayerPlayModeTests {
+        public AudioListener audioListener;
         public AudioClipPlayer audioClipPlayer;
         public AudioSource audioSource;
         public AudioClip TestClipOne {
@@ -27,24 +28,14 @@ namespace LapsPlayModeTests {
         }
         [SetUp]
         public void Setup() {
+            audioListener = new GameObject().AddComponent<AudioListener>();
             audioClipPlayer = new GameObject().AddComponent<AudioClipPlayer>();
             audioSource = audioClipPlayer.GetComponent<AudioSource>();
         }
         [TearDown]
         public void Teardown() {
             Object.DestroyImmediate(audioClipPlayer.gameObject);
-        }
-        [UnityTest]
-        public IEnumerator AudioSourceCannotHavePlayOnAwakeEnabledAndCannotHaveClip() {
-            audioSource.playOnAwake = true;
-            audioSource.clip = TestClipOne;
-            Selection.activeGameObject = audioSource.gameObject;
-            yield return null;
-            yield return null;
-            LogAssert.Expect(LogType.Error, $"{nameof(AudioClipPlayer)} cannot have an {nameof(AudioSource)} with play on awake enabled. Set play on awake at {nameof(audioClipPlayer)}");
-            LogAssert.Expect(LogType.Error, $"{nameof(AudioClipPlayer)} cannot have an {nameof(AudioSource)} with audio clip. Set clips at {nameof(audioClipPlayer)}");
-            Assert.AreEqual(false, audioSource.playOnAwake);
-            Assert.AreEqual(null, audioSource.clip);
+            Object.DestroyImmediate(audioListener.gameObject);
         }
         [UnityTest]
         public IEnumerator OneClipInStartClip() {
