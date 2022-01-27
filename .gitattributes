@@ -4,8 +4,8 @@
 # Macro for all binary files that should use Git LFS.
 [attr]lfs -text filter=lfs diff=lfs merge=lfs
 
-# Default to auto-normalized line endings.
-* text=auto
+# Default to non-normalized line endings.
+* -text
 
 # Code
 *.cs text diff=csharp
