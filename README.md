@@ -1,5 +1,5 @@
 # Laps Project
-Laps is a visual scripting addon for unity. It lets designers craft memorable levels in minutes. 
+Laps is a visual scripting addon for unity. It lets designers craft interactive contraptions inside unity scene view.
 
 # Basic Controls
 - If an object in level has a laps component attached to it, it will show up a gizmo that you can drag around.
@@ -8,9 +8,9 @@ Laps is a visual scripting addon for unity. It lets designers craft memorable le
 - You can delete a connection if you click the input slot or the target slot of that connection.
 
 # What To Do Next
-- join our discord server
-- help development by contacting seyahdoo (you can do it through discord)
-- wish me luck i guess.
+- Clone the project and open up the test scenes to have a look.
+- Join our discord server.
+- Send up any sort of problem you are having through github issues.
 
 [![][discord]][discordlink]
 
