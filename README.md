@@ -1,6 +1,8 @@
 # Laps Project
 Laps is a visual scripting addon for unity. It lets designers craft interactive contraptions inside unity scene view.
 
+![Connections Preview](Other/laps.png)
+
 # Basic Controls
 - If an object in level has a laps component attached to it, it will show up a gizmo that you can drag around.
 - If you select a laps component and press S keyboard shortcut, you will see logic slots in scene view.
